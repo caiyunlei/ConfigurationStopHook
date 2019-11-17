@@ -17,12 +17,12 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
+    <projectConfigurable instance="com.cyl.idea.plugin.settings.Setting"/>
   </extensions>
 
   <actions>
-    <action id="com.cyl.idea.plugin.RunTasksBeforeStopApplicationAction"
-            class="com.cyl.idea.plugin.RunTasksBeforeStopApplicationAction" text="RunTasksBeforeStopApplication"
+    <action id="com.cyl.idea.plugin.actions.RunTasksBeforeStopApplicationAction"
+            class="com.cyl.idea.plugin.actions.RunTasksBeforeStopApplicationAction" text="RunTasksBeforeStopApplication"
             description="Run tasks before stop application, just run tasks before launch." icon="AllIcons.Actions.Suspend">
       <add-to-group group-id="RunMenu" anchor="first"/>
       <add-to-group group-id="ToolbarRunGroup" anchor="first"/>

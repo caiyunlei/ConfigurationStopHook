@@ -1,4 +1,4 @@
-package com.cyl.idea.plugin;
+package com.cyl.idea.plugin.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.execution.actions.StopAction;
