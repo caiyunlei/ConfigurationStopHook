@@ -1,6 +1,7 @@
 package com.cyl.idea.plugin.settings;
 
 import com.cyl.idea.plugin.panels.TasksBeforeStopApplicationPanel;
+import com.cyl.idea.plugin.panels.TreeCellRender;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.impl.RunManagerImpl;
@@ -11,6 +12,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -22,7 +24,7 @@ import java.util.Map;
 
 public class Setting implements Configurable {
     private JPanel myGeneralPanel;
-    private Tree tree1;
+    private Tree tree;
     private JPanel myRightPanel;
     private PropertiesComponent myPropertiesComponent;
 
@@ -32,8 +34,10 @@ public class Setting implements Configurable {
 
         myRightPanel = new JPanel(new BorderLayout());
         myRightPanel.add(new TasksBeforeStopApplicationPanel(),BorderLayout.CENTER);
-        tree1 = new Tree();
-        JSplitPane comp = new JSplitPane(SwingConstants.VERTICAL,tree1,myRightPanel);
+        tree = new Tree();
+        tree.setShowsRootHandles(true);
+        tree.setCellRenderer(new TreeCellRender(getRunManager()));
+        JSplitPane comp = new JSplitPane(SwingConstants.VERTICAL, tree, myRightPanel);
         comp.setDividerLocation(250);
 
         myGeneralPanel.add(comp);
@@ -55,11 +59,8 @@ public class Setting implements Configurable {
     private void initTree() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
         TreeModel treeModel = new DefaultTreeModel(root);
-        tree1.setModel(treeModel);
-//        tree1.setRootVisible(false);
-        Project[] projects = ProjectManager.getInstance().getOpenProjects();
-        //todo:multiple projects
-        RunManagerImpl runManager = (RunManagerImpl) RunManagerImpl.getInstance(projects[0]);
+        tree.setModel(treeModel);
+        RunManagerImpl runManager = getRunManager();
         Map<ConfigurationType, Map<String, List<RunnerAndConfigurationSettings>>> runConfigurations =
                 runManager.getConfigurationsGroupedByTypeAndFolder(true);
 
@@ -86,6 +87,15 @@ public class Setting implements Configurable {
                 }
             }
         }
+        tree.expandRow(0);
+        tree.setRootVisible(false);
+    }
+
+    @NotNull
+    private RunManagerImpl getRunManager() {
+        Project[] projects = ProjectManager.getInstance().getOpenProjects();
+        //todo:multiple projects
+        return (RunManagerImpl) RunManagerImpl.getInstance(projects[0]);
     }
 
     @Override
@@ -96,9 +106,5 @@ public class Setting implements Configurable {
     @Override
     public void apply() throws ConfigurationException {
 
-    }
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
     }
 }
