@@ -27,6 +27,16 @@ public class Setting implements Configurable {
     private PropertiesComponent myPropertiesComponent;
 
     public Setting(PropertiesComponent propertiesComponent) {
+        myGeneralPanel = new JPanel();
+        myGeneralPanel.setLayout(new BorderLayout());
+
+        myRightPanel = new JPanel(new BorderLayout());
+        myRightPanel.add(new TasksBeforeStopApplicationPanel(),BorderLayout.CENTER);
+        tree1 = new Tree();
+        JSplitPane comp = new JSplitPane(SwingConstants.VERTICAL,tree1,myRightPanel);
+        comp.setDividerLocation(250);
+
+        myGeneralPanel.add(comp);
         myPropertiesComponent = propertiesComponent;
     }
 
@@ -39,13 +49,7 @@ public class Setting implements Configurable {
     @Override
     public JComponent createComponent() {
         initTree();
-        addTasksPanel();
         return myGeneralPanel;
-    }
-
-    private void addTasksPanel() {
-        myRightPanel.setLayout(new BorderLayout());
-        myRightPanel.add(new TasksBeforeStopApplicationPanel(),BorderLayout.CENTER);
     }
 
     private void initTree() {
