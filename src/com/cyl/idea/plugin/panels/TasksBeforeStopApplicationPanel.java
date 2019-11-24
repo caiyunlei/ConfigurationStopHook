@@ -37,13 +37,11 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
     private final JCheckBox myActivateToolWindowBeforeRunCheckBox;
     private final JBList<BeforeRunTask<?>> myList;
     private final CollectionListModel<BeforeRunTask<?>> myModel;
-    private RunConfiguration myRunConfiguration;
-
     private final List<BeforeRunTask<?>> originalTasks = new SmartList<>();
-//    private final TasksBeforeStopApplicationPanel.StepsBeforeRunListener myListener;
+    //    private final TasksBeforeStopApplicationPanel.StepsBeforeRunListener myListener;
     private final JPanel myPanel;
-
     private final Set<BeforeRunTask<?>> clonedTasks = new THashSet<>();
+    private RunConfiguration myRunConfiguration;
 
     public TasksBeforeStopApplicationPanel() {
 //        myListener = listener;
@@ -191,13 +189,12 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
             LinkedHashMap<BeforeRunTaskProvider<?>, Integer> counter = new LinkedHashMap<>();
             for (BeforeRunTask<?> task : tasks) {
                 //noinspection unchecked
-                BeforeRunTaskProvider<BeforeRunTask> provider = BeforeRunTaskProvider.getProvider(myRunConfiguration.getProject(), (Key<BeforeRunTask>)task.getProviderId());
+                BeforeRunTaskProvider<BeforeRunTask> provider = BeforeRunTaskProvider.getProvider(myRunConfiguration.getProject(), (Key<BeforeRunTask>) task.getProviderId());
                 if (provider != null) {
                     Integer count = counter.get(provider);
                     if (count == null) {
                         count = task.getItemsCount();
-                    }
-                    else {
+                    } else {
                         count += task.getItemsCount();
                     }
                     counter.put(provider, count);
@@ -251,8 +248,7 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
             if (provider.createTask(myRunConfiguration) != null) {
                 if (!checkOnlyAddAction) {
                     return true;
-                }
-                else if (!provider.isSingleton() || !activeProviderKeys.contains(provider.getId())) {
+                } else if (!provider.isSingleton() || !activeProviderKeys.contains(provider.getId())) {
                     return true;
                 }
             }
@@ -335,7 +331,7 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value instanceof BeforeRunTask) {
-                BeforeRunTask task = (BeforeRunTask)value;
+                BeforeRunTask task = (BeforeRunTask) value;
                 @SuppressWarnings("unchecked")
                 BeforeRunTaskProvider<BeforeRunTask> provider = BeforeRunTaskProvider.getProvider(myRunConfiguration.getProject(), task.getProviderId());
                 if (provider != null) {

@@ -33,7 +33,7 @@ public class Setting implements Configurable {
         myGeneralPanel.setLayout(new BorderLayout());
 
         myRightPanel = new JPanel(new BorderLayout());
-        myRightPanel.add(new TasksBeforeStopApplicationPanel(),BorderLayout.CENTER);
+        myRightPanel.add(new TasksBeforeStopApplicationPanel(), BorderLayout.CENTER);
         tree = new Tree();
         tree.setShowsRootHandles(true);
         tree.setCellRenderer(new TreeCellRender(getRunManager()));
@@ -71,18 +71,17 @@ public class Setting implements Configurable {
 
             DefaultMutableTreeNode typeNode = new DefaultMutableTreeNode(type);
             root.add(typeNode);
-            for (Map.Entry<String,List<RunnerAndConfigurationSettings>> entry : folderMap.entrySet()) {
+            for (Map.Entry<String, List<RunnerAndConfigurationSettings>> entry : folderMap.entrySet()) {
                 DefaultMutableTreeNode node = null;
                 String folder = entry.getKey();
                 if (folder == null) {
                     node = typeNode;
-                }
-                else {
+                } else {
                     node = new DefaultMutableTreeNode(folder);
                     typeNode.add(node);
                 }
 
-                for (RunnerAndConfigurationSettings settings: entry.getValue()) {
+                for (RunnerAndConfigurationSettings settings : entry.getValue()) {
                     node.add(new DefaultMutableTreeNode(settings));
                 }
             }

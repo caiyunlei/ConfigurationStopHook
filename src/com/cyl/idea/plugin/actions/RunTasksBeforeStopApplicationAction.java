@@ -1,7 +1,7 @@
 package com.cyl.idea.plugin.actions;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.execution.actions.StopAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class RunTasksBeforeStopApplicationAction extends StopAction {
