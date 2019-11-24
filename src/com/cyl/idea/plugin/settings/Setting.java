@@ -1,5 +1,6 @@
 package com.cyl.idea.plugin.settings;
 
+import com.cyl.idea.plugin.panels.TasksBeforeStopApplicationPanel;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.impl.RunManagerImpl;
@@ -8,18 +9,20 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.Nls;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
 public class Setting implements Configurable {
     private JPanel myGeneralPanel;
-    private JTree tree1;
+    private Tree tree1;
     private JPanel myRightPanel;
     private PropertiesComponent myPropertiesComponent;
 
@@ -36,7 +39,13 @@ public class Setting implements Configurable {
     @Override
     public JComponent createComponent() {
         initTree();
+        addTasksPanel();
         return myGeneralPanel;
+    }
+
+    private void addTasksPanel() {
+        myRightPanel.setLayout(new BorderLayout());
+        myRightPanel.add(new TasksBeforeStopApplicationPanel(),BorderLayout.CENTER);
     }
 
     private void initTree() {
@@ -83,5 +92,9 @@ public class Setting implements Configurable {
     @Override
     public void apply() throws ConfigurationException {
 
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }
