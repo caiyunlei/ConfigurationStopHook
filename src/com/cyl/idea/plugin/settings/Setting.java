@@ -5,6 +5,8 @@ import com.cyl.idea.plugin.panels.TreeCellRender;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.impl.RunManagerImpl;
+import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
+import com.intellij.execution.impl.SingleConfigurationConfigurable;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -15,32 +17,36 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
 public class Setting implements Configurable {
-    private JPanel myGeneralPanel;
-    private Tree tree;
+    private JPanel myWholePanel;
+    private Tree myConfigurationTree;
     private JPanel myRightPanel;
     private PropertiesComponent myPropertiesComponent;
 
     public Setting(PropertiesComponent propertiesComponent) {
-        myGeneralPanel = new JPanel();
-        myGeneralPanel.setLayout(new BorderLayout());
+        myWholePanel = new JPanel();
+        myWholePanel.setLayout(new BorderLayout());
 
         myRightPanel = new JPanel(new BorderLayout());
-        myRightPanel.add(new TasksBeforeStopApplicationPanel(), BorderLayout.CENTER);
-        tree = new Tree();
-        tree.setShowsRootHandles(true);
-        tree.setCellRenderer(new TreeCellRender(getRunManager()));
-        JSplitPane comp = new JSplitPane(SwingConstants.VERTICAL, tree, myRightPanel);
-        comp.setDividerLocation(250);
+        myRightPanel.add(new TasksBeforeStopApplicationPanel(null), BorderLayout.CENTER);
 
-        myGeneralPanel.add(comp);
+        myConfigurationTree = new Tree();
+        myConfigurationTree.setShowsRootHandles(true);
+        myConfigurationTree.setCellRenderer(new TreeCellRender(getRunManager()));
+
+        JSplitPane splitPane = new JSplitPane(SwingConstants.VERTICAL, myConfigurationTree, myRightPanel);
+        splitPane.setDividerLocation(250);
+
+        myWholePanel.add(splitPane);
         myPropertiesComponent = propertiesComponent;
     }
 
@@ -53,13 +59,13 @@ public class Setting implements Configurable {
     @Override
     public JComponent createComponent() {
         initTree();
-        return myGeneralPanel;
+        return myWholePanel;
     }
 
     private void initTree() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
         TreeModel treeModel = new DefaultTreeModel(root);
-        tree.setModel(treeModel);
+        myConfigurationTree.setModel(treeModel);
         RunManagerImpl runManager = getRunManager();
         Map<ConfigurationType, Map<String, List<RunnerAndConfigurationSettings>>> runConfigurations =
                 runManager.getConfigurationsGroupedByTypeAndFolder(true);
@@ -86,8 +92,20 @@ public class Setting implements Configurable {
                 }
             }
         }
-        tree.expandRow(0);
-        tree.setRootVisible(false);
+        myConfigurationTree.expandRow(0);
+        myConfigurationTree.setRootVisible(false);
+
+        myConfigurationTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
+            //com/intellij/execution/impl/RunConfigurable.kt
+            TreePath selectionPath = myConfigurationTree.getSelectionPath();
+            if (selectionPath != null) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
+                Object userObject = getSafeUserObject(node);
+                if (userObject instanceof SingleConfigurationConfigurable<?>) {
+//                   updateRightPanel((SingleConfigurationConfigurable<RunConfiguration>)userObject);
+                }
+            }
+        });
     }
 
     @NotNull
@@ -105,5 +123,20 @@ public class Setting implements Configurable {
     @Override
     public void apply() throws ConfigurationException {
 
+    }
+
+    private Object getSafeUserObject(DefaultMutableTreeNode node){
+        Object userObject = node.getUserObject();
+        if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
+            TasksBeforeStopApplicationPanel newRightPanel = new TasksBeforeStopApplicationPanel(((RunnerAndConfigurationSettings) userObject));
+            updateRightPanel(newRightPanel);
+
+        }
+        return userObject;
+    }
+
+    private void updateRightPanel(TasksBeforeStopApplicationPanel newRightPanel) {
+        myRightPanel.removeAll();
+        myRightPanel.add(newRightPanel, BorderLayout.CENTER);
     }
 }

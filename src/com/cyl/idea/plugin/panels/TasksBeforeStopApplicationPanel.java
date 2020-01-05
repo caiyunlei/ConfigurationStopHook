@@ -3,8 +3,10 @@ package com.cyl.idea.plugin.panels;
 import com.intellij.execution.BeforeRunTask;
 import com.intellij.execution.BeforeRunTaskProvider;
 import com.intellij.execution.ExecutionBundle;
+import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.UnknownRunConfiguration;
+import com.intellij.execution.impl.RunManagerImplKt;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonShortcuts;
@@ -43,7 +45,7 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
     private final Set<BeforeRunTask<?>> clonedTasks = new THashSet<>();
     private RunConfiguration myRunConfiguration;
 
-    public TasksBeforeStopApplicationPanel() {
+    public TasksBeforeStopApplicationPanel(RunnerAndConfigurationSettings settings) {
 //        myListener = listener;
         myModel = new CollectionListModel<>();
         myList = new JBList<>(myModel);
@@ -147,6 +149,9 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         checkboxPanel.add(myShowSettingsBeforeRunCheckBox);
         checkboxPanel.add(myActivateToolWindowBeforeRunCheckBox);
         add(checkboxPanel, BorderLayout.SOUTH);
+        if (settings != null) {
+            doReset(settings);
+        }
     }
 
 //    @Nullable
@@ -161,21 +166,22 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
 //        return provider == null ? null : new BeforeRunTaskAndProvider(task, provider, index);
 //    }
 
-//    void doReset(@NotNull RunnerAndConfigurationSettings settings) {
-//        clonedTasks.clear();
-//
-//        myRunConfiguration = settings.getConfiguration();
-//
-//        originalTasks.clear();
+    void doReset(@NotNull RunnerAndConfigurationSettings settings) {
+        clonedTasks.clear();
+
+        myRunConfiguration = settings.getConfiguration();
+
+        originalTasks.clear();
+        //todo:
 //        originalTasks.addAll(RunManagerImplKt.doGetBeforeRunTasks(myRunConfiguration));
-//        myModel.replaceAll(originalTasks);
-//        myShowSettingsBeforeRunCheckBox.setSelected(settings.isEditBeforeRun());
-//        myShowSettingsBeforeRunCheckBox.setEnabled(!isUnknown());
-//        myActivateToolWindowBeforeRunCheckBox.setSelected(settings.isActivateToolWindowBeforeRun());
-//        myActivateToolWindowBeforeRunCheckBox.setEnabled(!isUnknown());
-//        myPanel.setVisible(checkBeforeRunTasksAbility(false));
-//        updateText();
-//    }
+        myModel.replaceAll(originalTasks);
+        myShowSettingsBeforeRunCheckBox.setSelected(settings.isEditBeforeRun());
+        myShowSettingsBeforeRunCheckBox.setEnabled(!isUnknown());
+        myActivateToolWindowBeforeRunCheckBox.setSelected(settings.isActivateToolWindowBeforeRun());
+        myActivateToolWindowBeforeRunCheckBox.setEnabled(!isUnknown());
+        myPanel.setVisible(checkBeforeRunTasksAbility(false));
+        updateText();
+    }
 
     private void updateText() {
         StringBuilder sb = new StringBuilder();
@@ -310,6 +316,7 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
 
     @NotNull
     private List<BeforeRunTaskProvider<BeforeRunTask>> getBeforeRunTaskProviders() {
+//        myRunConfiguration == null
         return BeforeRunTaskProvider.EXTENSION_POINT_NAME.getExtensionList(myRunConfiguration.getProject());
     }
 

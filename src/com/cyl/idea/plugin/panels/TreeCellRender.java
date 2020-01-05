@@ -18,6 +18,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
+ * todo:直接使用kt文件
  * copy from com.intellij.execution.impl.RunConfigurableTreeRenderer
  */
 public class TreeCellRender extends ColoredTreeCellRenderer {
