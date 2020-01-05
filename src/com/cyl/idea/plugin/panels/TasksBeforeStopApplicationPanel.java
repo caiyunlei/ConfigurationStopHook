@@ -1,12 +1,12 @@
 package com.cyl.idea.plugin.panels;
 
+import com.cyl.idea.plugin.settings.TasksSettings;
 import com.intellij.execution.BeforeRunTask;
 import com.intellij.execution.BeforeRunTaskProvider;
 import com.intellij.execution.ExecutionBundle;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.UnknownRunConfiguration;
-import com.intellij.execution.impl.RunManagerImplKt;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonShortcuts;
@@ -40,13 +40,11 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
     private final JBList<BeforeRunTask<?>> myList;
     private final CollectionListModel<BeforeRunTask<?>> myModel;
     private final List<BeforeRunTask<?>> originalTasks = new SmartList<>();
-    //    private final TasksBeforeStopApplicationPanel.StepsBeforeRunListener myListener;
     private final JPanel myPanel;
     private final Set<BeforeRunTask<?>> clonedTasks = new THashSet<>();
     private RunConfiguration myRunConfiguration;
 
     public TasksBeforeStopApplicationPanel(RunnerAndConfigurationSettings settings) {
-//        myListener = listener;
         myModel = new CollectionListModel<>();
         myList = new JBList<>(myModel);
         myList.getEmptyText().setText(ExecutionBundle.message("before.launch.panel.empty"));
@@ -78,32 +76,12 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         myDecorator.setEditAction(new AnActionButtonRunnable() {
             @Override
             public void run(AnActionButton button) {
-//                BeforeRunTaskAndProvider selection = getSelection();
-//                if (selection == null) {
-//                    return;
-//                }
-//
-//                BeforeRunTask<?> task = selection.getTask();
-//                if (!clonedTasks.contains(task)) {
-//                    task = task.clone();
-//                    clonedTasks.add(task);
-//                    myModel.setElementAt(task, selection.getIndex());
-//                }
-//
-//                selection.getProvider().configureTask(button.getDataContext(), myRunConfiguration, task)
-//                        .onSuccess(changed -> {
-//                            if (changed) {
-//                                updateText();
-//                            }
-//                        });
             }
         });
         //noinspection Convert2Lambda
         myDecorator.setEditActionUpdater(new AnActionButtonUpdater() {
             @Override
             public boolean isEnabled(@NotNull AnActionEvent e) {
-//                BeforeRunTaskAndProvider selection = getSelection();
-//                return selection != null && selection.getProvider().isConfigurable();
                 return false;
             }
         });
@@ -113,11 +91,10 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
                 doAddAction(button);
             }
         });
-        //noinspection Convert2Lambda
+
         myDecorator.setAddActionUpdater(new AnActionButtonUpdater() {
             @Override
             public boolean isEnabled(@NotNull AnActionEvent e) {
-//                return checkBeforeRunTasksAbility(true);
                 return true;
             }
         });
@@ -154,26 +131,13 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         }
     }
 
-//    @Nullable
-//    private BeforeRunTaskAndProvider getSelection() {
-//        final int index = myList.getSelectedIndex();
-//        if (index == -1) {
-//            return null;
-//        }
-//        BeforeRunTask<?> task = myModel.getElementAt(index);
-//        @SuppressWarnings("unchecked")
-//        BeforeRunTaskProvider<BeforeRunTask<?>> provider = BeforeRunTaskProvider.getProvider(myRunConfiguration.getProject(), (Key)task.getProviderId());
-//        return provider == null ? null : new BeforeRunTaskAndProvider(task, provider, index);
-//    }
-
     void doReset(@NotNull RunnerAndConfigurationSettings settings) {
         clonedTasks.clear();
 
         myRunConfiguration = settings.getConfiguration();
 
         originalTasks.clear();
-        //todo:
-//        originalTasks.addAll(RunManagerImplKt.doGetBeforeRunTasks(myRunConfiguration));
+        originalTasks.addAll(TasksSettings.getBeforeTerminalTasks(myRunConfiguration));
         myModel.replaceAll(originalTasks);
         myShowSettingsBeforeRunCheckBox.setSelected(settings.isEditBeforeRun());
         myShowSettingsBeforeRunCheckBox.setEnabled(!isUnknown());
@@ -293,16 +257,6 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
                                 }
                                 task.setEnabled(true);
 
-                                Set<RunConfiguration> configurationSet = new THashSet<>();
-//                                getAllRunBeforeRuns(task, configurationSet);
-                                if (configurationSet.contains(myRunConfiguration)) {
-                                    JOptionPane.showMessageDialog(TasksBeforeStopApplicationPanel.this,
-                                            ExecutionBundle.message("before.launch.panel.cyclic_dependency_warning",
-                                                    myRunConfiguration.getName(),
-                                                    provider.getDescription(task)),
-                                            ExecutionBundle.message("warning.common.title"), JOptionPane.WARNING_MESSAGE);
-                                    return;
-                                }
                                 addTask(task);
                             });
                 }
@@ -322,6 +276,7 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
 
     public void addTask(@NotNull BeforeRunTask task) {
         myModel.add(task);
+        TasksSettings.addNewTask(myRunConfiguration, task);
     }
 
     @NotNull

@@ -6,10 +6,8 @@ import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
-import com.intellij.execution.impl.SingleConfigurationConfigurable;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.treeStructure.Tree;
@@ -26,18 +24,17 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
-public class Setting implements Configurable {
+public class ProjectSettingPage implements Configurable {
     private JPanel myWholePanel;
     private Tree myConfigurationTree;
     private JPanel myRightPanel;
-    private PropertiesComponent myPropertiesComponent;
+//    private PropertiesComponent myPropertiesComponent;
 
-    public Setting(PropertiesComponent propertiesComponent) {
+    public ProjectSettingPage(PropertiesComponent propertiesComponent) {
         myWholePanel = new JPanel();
         myWholePanel.setLayout(new BorderLayout());
 
         myRightPanel = new JPanel(new BorderLayout());
-        myRightPanel.add(new TasksBeforeStopApplicationPanel(null), BorderLayout.CENTER);
 
         myConfigurationTree = new Tree();
         myConfigurationTree.setShowsRootHandles(true);
@@ -47,7 +44,7 @@ public class Setting implements Configurable {
         splitPane.setDividerLocation(250);
 
         myWholePanel.add(splitPane);
-        myPropertiesComponent = propertiesComponent;
+//        myPropertiesComponent = propertiesComponent;
     }
 
     @Nls
@@ -67,6 +64,8 @@ public class Setting implements Configurable {
         TreeModel treeModel = new DefaultTreeModel(root);
         myConfigurationTree.setModel(treeModel);
         RunManagerImpl runManager = getRunManager();
+
+        //runConfigurable data come from here
         Map<ConfigurationType, Map<String, List<RunnerAndConfigurationSettings>>> runConfigurations =
                 runManager.getConfigurationsGroupedByTypeAndFolder(true);
 
@@ -100,10 +99,7 @@ public class Setting implements Configurable {
             TreePath selectionPath = myConfigurationTree.getSelectionPath();
             if (selectionPath != null) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
-                Object userObject = getSafeUserObject(node);
-                if (userObject instanceof SingleConfigurationConfigurable<?>) {
-//                   updateRightPanel((SingleConfigurationConfigurable<RunConfiguration>)userObject);
-                }
+                getSafeUserObject(node);
             }
         });
     }
@@ -121,16 +117,18 @@ public class Setting implements Configurable {
     }
 
     @Override
-    public void apply() throws ConfigurationException {
-
+    public void apply() {
     }
 
-    private Object getSafeUserObject(DefaultMutableTreeNode node){
+    @Override
+    public void reset() {
+    }
+
+    private Object getSafeUserObject(DefaultMutableTreeNode node) {
         Object userObject = node.getUserObject();
         if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
             TasksBeforeStopApplicationPanel newRightPanel = new TasksBeforeStopApplicationPanel(((RunnerAndConfigurationSettings) userObject));
             updateRightPanel(newRightPanel);
-
         }
         return userObject;
     }

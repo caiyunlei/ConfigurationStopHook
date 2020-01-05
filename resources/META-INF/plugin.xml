@@ -17,7 +17,7 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable instance="com.cyl.idea.plugin.settings.Setting"/>
+    <projectConfigurable instance="com.cyl.idea.plugin.settings.ProjectSettingPage"/>
   </extensions>
 
   <actions>
