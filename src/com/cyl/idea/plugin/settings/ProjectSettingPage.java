@@ -16,11 +16,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.awt.*;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +42,6 @@ public class ProjectSettingPage implements Configurable {
         splitPane.setDividerLocation(250);
 
         myWholePanel.add(splitPane);
-//        myPropertiesComponent = propertiesComponent;
     }
 
     @Nls
@@ -61,8 +58,7 @@ public class ProjectSettingPage implements Configurable {
 
     private void initTree() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
-        TreeModel treeModel = new DefaultTreeModel(root);
-        myConfigurationTree.setModel(treeModel);
+        myConfigurationTree.setModel(new DefaultTreeModel(root));
         RunManagerImpl runManager = getRunManager();
 
         //runConfigurable data come from here
@@ -93,6 +89,7 @@ public class ProjectSettingPage implements Configurable {
         }
         myConfigurationTree.expandRow(0);
         myConfigurationTree.setRootVisible(false);
+        expandAll(myConfigurationTree,new TreePath(root));
 
         myConfigurationTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
             //com/intellij/execution/impl/RunConfigurable.kt
@@ -122,6 +119,20 @@ public class ProjectSettingPage implements Configurable {
 
     @Override
     public void reset() {
+    }
+
+
+    private static void expandAll(JTree tree, TreePath parent) {
+        TreeNode node = (TreeNode) parent.getLastPathComponent();
+        if (node.getChildCount() >= 0) {
+            for (Enumeration e = node.children(); e.hasMoreElements(); ) {
+                TreeNode n = (TreeNode) e.nextElement();
+                TreePath path = parent.pathByAddingChild(n);
+                expandAll(tree, path);
+            }
+        }
+
+        tree.expandPath(parent);
     }
 
     private Object getSafeUserObject(DefaultMutableTreeNode node) {
