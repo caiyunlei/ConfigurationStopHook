@@ -7,6 +7,7 @@ import com.intellij.execution.ExecutionBundle;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.UnknownRunConfiguration;
+import com.intellij.execution.impl.RunConfigurationBeforeRunProvider;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonShortcuts;
@@ -33,6 +34,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class TasksBeforeStopApplicationPanel extends JPanel {
     private final JCheckBox myShowSettingsBeforeRunCheckBox;
@@ -200,14 +203,6 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         return items.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(items);
     }
 
-    public boolean needEditBeforeRun() {
-        return myShowSettingsBeforeRunCheckBox.isSelected();
-    }
-
-    public boolean needActivateToolWindowBeforeRun() {
-        return myActivateToolWindowBeforeRunCheckBox.isSelected();
-    }
-
     private boolean checkBeforeRunTasksAbility(boolean checkOnlyAddAction) {
         if (isUnknown()) {
             return false;
@@ -270,8 +265,13 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
 
     @NotNull
     private List<BeforeRunTaskProvider<BeforeRunTask>> getBeforeRunTaskProviders() {
-//        myRunConfiguration == null
-        return BeforeRunTaskProvider.EXTENSION_POINT_NAME.getExtensionList(myRunConfiguration.getProject());
+        List<BeforeRunTaskProvider<BeforeRunTask>> extensionList = BeforeRunTaskProvider.EXTENSION_POINT_NAME.getExtensionList(myRunConfiguration.getProject());
+        return extensionList.stream().filter(anotherConfiguration()).collect(Collectors.toList());
+    }
+
+    @NotNull
+    private Predicate<BeforeRunTaskProvider<BeforeRunTask>> anotherConfiguration() {
+        return RunConfigurationBeforeRunProvider.class::isInstance;
     }
 
     public void addTask(@NotNull BeforeRunTask task) {
