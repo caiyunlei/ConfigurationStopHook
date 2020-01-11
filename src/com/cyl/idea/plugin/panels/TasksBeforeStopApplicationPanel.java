@@ -37,7 +37,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class TasksBeforeStopApplicationPanel extends JPanel {
-    private final JCheckBox myShowSettingsBeforeRunCheckBox;
     private final JCheckBox myActivateToolWindowBeforeRunCheckBox;
     private final JBList<BeforeRunTask<?>> myList;
     private final CollectionListModel<BeforeRunTask<?>> myModel;
@@ -67,7 +66,6 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
 
             @Override
             public void contentsChanged(ListDataEvent e) {
-                saveTasks();
             }
         });
 
@@ -87,14 +85,9 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         setLayout(new BorderLayout());
         add(myPanel, BorderLayout.CENTER);
 
-        myShowSettingsBeforeRunCheckBox = new JCheckBox(ExecutionBundle.message("configuration.edit.before.run"));
-        myShowSettingsBeforeRunCheckBox.addActionListener(e -> updateText());
-
         myActivateToolWindowBeforeRunCheckBox = new JCheckBox(ExecutionBundle.message("configuration.activate.toolwindow.before.run"));
-        myActivateToolWindowBeforeRunCheckBox.addActionListener(e -> updateText());
 
         JPanel checkboxPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, JBUIScale.scale(5), JBUIScale.scale(5)));
-        checkboxPanel.add(myShowSettingsBeforeRunCheckBox);
         checkboxPanel.add(myActivateToolWindowBeforeRunCheckBox);
         add(checkboxPanel, BorderLayout.SOUTH);
         if (settings != null) {
@@ -115,15 +108,9 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         originalTasks.clear();
         originalTasks.addAll(TasksSettings.getBeforeTerminalTasks(myRunConfiguration));
         myModel.replaceAll(originalTasks);
-        myShowSettingsBeforeRunCheckBox.setSelected(settings.isEditBeforeRun());
-        myShowSettingsBeforeRunCheckBox.setEnabled(!isUnknown());
         myActivateToolWindowBeforeRunCheckBox.setSelected(settings.isActivateToolWindowBeforeRun());
         myActivateToolWindowBeforeRunCheckBox.setEnabled(!isUnknown());
         myPanel.setVisible(checkBeforeRunTasksAbility(false));
-        updateText();
-    }
-
-    private void updateText() {
     }
 
     private boolean checkBeforeRunTasksAbility(boolean checkOnlyAddAction) {
