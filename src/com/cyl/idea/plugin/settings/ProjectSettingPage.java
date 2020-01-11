@@ -11,6 +11,7 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.ui.tree.TreeUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -89,7 +90,7 @@ public class ProjectSettingPage implements Configurable {
         }
         myConfigurationTree.expandRow(0);
         myConfigurationTree.setRootVisible(false);
-        expandAll(myConfigurationTree,new TreePath(root));
+        TreeUtil.expandAll(myConfigurationTree);
 
         myConfigurationTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
             //com/intellij/execution/impl/RunConfigurable.kt
@@ -119,20 +120,6 @@ public class ProjectSettingPage implements Configurable {
 
     @Override
     public void reset() {
-    }
-
-
-    private static void expandAll(JTree tree, TreePath parent) {
-        TreeNode node = (TreeNode) parent.getLastPathComponent();
-        if (node.getChildCount() >= 0) {
-            for (Enumeration e = node.children(); e.hasMoreElements(); ) {
-                TreeNode n = (TreeNode) e.nextElement();
-                TreePath path = parent.pathByAddingChild(n);
-                expandAll(tree, path);
-            }
-        }
-
-        tree.expandPath(parent);
     }
 
     private Object getSafeUserObject(DefaultMutableTreeNode node) {
