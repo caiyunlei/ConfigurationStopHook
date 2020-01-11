@@ -60,9 +60,26 @@ public class ProjectSettingPage implements Configurable {
     private void initTree() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
         myConfigurationTree.setModel(new DefaultTreeModel(root));
-        RunManagerImpl runManager = getRunManager();
 
+        buildTreeNode(root);
+
+        myConfigurationTree.expandRow(0);
+        myConfigurationTree.setRootVisible(false);
+        TreeUtil.expandAll(myConfigurationTree);
+
+        myConfigurationTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
+            //com/intellij/execution/impl/RunConfigurable.kt
+            TreePath selectionPath = myConfigurationTree.getSelectionPath();
+            if (selectionPath != null) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
+                getSafeUserObject(node);
+            }
+        });
+    }
+
+    private void buildTreeNode(DefaultMutableTreeNode root) {
         //runConfigurable data come from here
+        RunManagerImpl runManager = getRunManager();
         Map<ConfigurationType, Map<String, List<RunnerAndConfigurationSettings>>> runConfigurations =
                 runManager.getConfigurationsGroupedByTypeAndFolder(true);
 
@@ -88,18 +105,6 @@ public class ProjectSettingPage implements Configurable {
                 }
             }
         }
-        myConfigurationTree.expandRow(0);
-        myConfigurationTree.setRootVisible(false);
-        TreeUtil.expandAll(myConfigurationTree);
-
-        myConfigurationTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
-            //com/intellij/execution/impl/RunConfigurable.kt
-            TreePath selectionPath = myConfigurationTree.getSelectionPath();
-            if (selectionPath != null) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
-                getSafeUserObject(node);
-            }
-        });
     }
 
     @NotNull
