@@ -10,13 +10,15 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.UnknownRunConfiguration;
 import com.intellij.execution.impl.RunConfigurationBeforeRunProvider;
 import com.intellij.execution.impl.RunManagerImpl;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.CommonShortcuts;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.SystemInfo;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.*;
+import com.intellij.ui.AnActionButton;
+import com.intellij.ui.CollectionListModel;
+import com.intellij.ui.CommonActionsPanel;
+import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.scale.JBUIScale;
 import com.intellij.util.SmartList;
@@ -28,10 +30,9 @@ import javax.swing.*;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.*;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -56,16 +57,17 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         myModel.addListDataListener(new ListDataListener() {
             @Override
             public void intervalAdded(ListDataEvent e) {
-                updateText();
+                saveTasks();
             }
 
             @Override
             public void intervalRemoved(ListDataEvent e) {
-                updateText();
+                saveTasks();
             }
 
             @Override
             public void contentsChanged(ListDataEvent e) {
+                saveTasks();
             }
         });
 
@@ -74,55 +76,23 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
             myDecorator.setAsUsualTopToolbar();
         }
 
-        myDecorator.setEditAction(new AnActionButtonRunnable() {
-            @Override
-            public void run(AnActionButton button) {
-            }
-        });
-        //noinspection Convert2Lambda
-        myDecorator.setEditActionUpdater(new AnActionButtonUpdater() {
-            @Override
-            public boolean isEnabled(@NotNull AnActionEvent e) {
-                return false;
-            }
-        });
-        myDecorator.setAddAction(new AnActionButtonRunnable() {
-            @Override
-            public void run(AnActionButton button) {
-                doAddAction(button);
-            }
-        });
-
-        myDecorator.setAddActionUpdater(new AnActionButtonUpdater() {
-            @Override
-            public boolean isEnabled(@NotNull AnActionEvent e) {
-                return true;
-            }
-        });
-
-        myShowSettingsBeforeRunCheckBox = new JCheckBox(ExecutionBundle.message("configuration.edit.before.run"));
-        myShowSettingsBeforeRunCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateText();
-            }
-        });
-        myActivateToolWindowBeforeRunCheckBox = new JCheckBox(ExecutionBundle.message("configuration.activate.toolwindow.before.run"));
-        myActivateToolWindowBeforeRunCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateText();
-            }
-        });
+        myDecorator.setAddAction(this::doAddAction);
+        myDecorator.setAddActionUpdater(e -> true);
 
         myPanel = myDecorator.createPanel();
         myDecorator.getActionsPanel().setCustomShortcuts(CommonActionsPanel.Buttons.EDIT,
                 CommonActionsPanel.getCommonShortcut(CommonActionsPanel.Buttons.EDIT),
                 CommonShortcuts.DOUBLE_CLICK_1);
 
-
         setLayout(new BorderLayout());
         add(myPanel, BorderLayout.CENTER);
+
+        myShowSettingsBeforeRunCheckBox = new JCheckBox(ExecutionBundle.message("configuration.edit.before.run"));
+        myShowSettingsBeforeRunCheckBox.addActionListener(e -> updateText());
+
+        myActivateToolWindowBeforeRunCheckBox = new JCheckBox(ExecutionBundle.message("configuration.activate.toolwindow.before.run"));
+        myActivateToolWindowBeforeRunCheckBox.addActionListener(e -> updateText());
+
         JPanel checkboxPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, JBUIScale.scale(5), JBUIScale.scale(5)));
         checkboxPanel.add(myShowSettingsBeforeRunCheckBox);
         checkboxPanel.add(myActivateToolWindowBeforeRunCheckBox);
@@ -130,6 +100,11 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
         if (settings != null) {
             doReset(settings);
         }
+    }
+
+    private void saveTasks() {
+        List<BeforeRunTask<?>> items = myModel.getItems();
+        TasksSettings.updateTasks(myRunConfiguration, items);
     }
 
     void doReset(@NotNull RunnerAndConfigurationSettings settings) {
@@ -149,56 +124,6 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
     }
 
     private void updateText() {
-        StringBuilder sb = new StringBuilder();
-
-        if (myShowSettingsBeforeRunCheckBox.isSelected()) {
-            sb.append(ExecutionBundle.message("configuration.edit.before.run"));
-        }
-
-        List<BeforeRunTask<?>> tasks = myModel.getItems();
-        if (!tasks.isEmpty()) {
-            LinkedHashMap<BeforeRunTaskProvider<?>, Integer> counter = new LinkedHashMap<>();
-            for (BeforeRunTask<?> task : tasks) {
-                //noinspection unchecked
-                BeforeRunTaskProvider<BeforeRunTask> provider = BeforeRunTaskProvider.getProvider(myRunConfiguration.getProject(), (Key<BeforeRunTask>) task.getProviderId());
-                if (provider != null) {
-                    Integer count = counter.get(provider);
-                    if (count == null) {
-                        count = task.getItemsCount();
-                    } else {
-                        count += task.getItemsCount();
-                    }
-                    counter.put(provider, count);
-                }
-            }
-            for (Map.Entry<BeforeRunTaskProvider<?>, Integer> entry : counter.entrySet()) {
-                BeforeRunTaskProvider provider = entry.getKey();
-                String name = provider.getName();
-                name = StringUtil.trimStart(name, "Run ");
-                if (sb.length() > 0) {
-                    sb.append(", ");
-                }
-                sb.append(name);
-                if (entry.getValue() > 1) {
-                    sb.append(" (").append(entry.getValue().intValue()).append(")");
-                }
-            }
-        }
-
-        if (myActivateToolWindowBeforeRunCheckBox.isSelected()) {
-            sb.append(sb.length() > 0 ? ", " : "").append(ExecutionBundle.message("configuration.activate.toolwindow.before.run"));
-        }
-        if (sb.length() > 0) {
-            sb.insert(0, ": ");
-        }
-        sb.insert(0, ExecutionBundle.message("before.launch.panel.title"));
-//        myListener.titleChanged(sb.toString());
-    }
-
-    @NotNull
-    public List<BeforeRunTask<?>> getTasks() {
-        List<BeforeRunTask<?>> items = myModel.getItems();
-        return items.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(items);
     }
 
     private boolean checkBeforeRunTasksAbility(boolean checkOnlyAddAction) {
@@ -270,7 +195,6 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
 
     public void addTask(@NotNull BeforeRunTask task) {
         myModel.add(task);
-        TasksSettings.addNewTask(myRunConfiguration, task);
     }
 
     @NotNull

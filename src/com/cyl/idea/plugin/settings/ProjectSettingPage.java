@@ -127,7 +127,7 @@ public class ProjectSettingPage implements Configurable {
     private Object getSafeUserObject(DefaultMutableTreeNode node) {
         Object userObject = node.getUserObject();
         if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
-            TasksBeforeStopApplicationPanel newRightPanel = new TasksBeforeStopApplicationPanel(((RunnerAndConfigurationSettings) userObject));
+            TasksBeforeStopApplicationPanel newRightPanel = new TasksBeforeStopApplicationPanel((RunnerAndConfigurationSettings) userObject);
             updateRightPanel(newRightPanel);
         }
         return userObject;

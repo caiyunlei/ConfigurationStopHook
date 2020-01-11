@@ -15,9 +15,7 @@ public class TasksSettings {
         return terminalTasksSettings.getOrDefault(settings, Lists.newArrayList());
     }
 
-    public static void addNewTask(RunConfiguration settings, BeforeRunTask<?> task) {
-        List<BeforeRunTask<?>> tasks = getBeforeTerminalTasks(settings);
-        tasks.add(task);
+    public static void updateTasks(RunConfiguration settings, List<BeforeRunTask<?>> tasks) {
         terminalTasksSettings.put(settings, tasks);
     }
 }
