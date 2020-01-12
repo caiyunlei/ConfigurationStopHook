@@ -120,25 +120,6 @@ public class BeforeTerminalTasksPanel extends JPanel {
         myPanel.setVisible(true);
     }
 
-//    private boolean checkBeforeRunTasksAbility(boolean checkOnlyAddAction) {
-//        if (isUnknown()) {
-//            return false;
-//        }
-//
-//        Set<Key> activeProviderKeys = getActiveProviderKeys();
-//        for (final BeforeRunTaskProvider<BeforeRunTask> provider : getBeforeRunTaskProviders()) {
-//            if (provider.createTask(myRunConfiguration) != null) {
-//                if (!checkOnlyAddAction) {
-//                    return true;
-//                } else if (!provider.isSingleton() || !activeProviderKeys.contains(provider
-//                .getId())) {
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
-
     private boolean isUnknown() {
         return myRunConfiguration instanceof UnknownRunConfiguration;
     }
@@ -148,7 +129,6 @@ public class BeforeTerminalTasksPanel extends JPanel {
             return;
         }
 
-//        Set<Key> activeProviderKeys = getActiveProviderKeys();
         ListPopup listPopup = null;
         Project project = myRunConfiguration.getProject();
         for (final BeforeRunTaskProvider<BeforeRunTask> provider : getBeforeRunTaskProviders()) {
@@ -191,15 +171,6 @@ public class BeforeTerminalTasksPanel extends JPanel {
     public void addTask(@NotNull RunnerAndConfigurationSettings task) {
         myModel.add(task);
     }
-
-//    @NotNull
-//    private Set<Key> getActiveProviderKeys() {
-//        Set<Key> result = new THashSet<>();
-//        for (RunnerAndConfigurationSettings task : myModel.getItems()) {
-//            result.add(task.ge);
-//        }
-//        return result;
-//    }
 
     private class MyListCellRenderer extends JBList.StripedListCellRenderer {
         @Override
