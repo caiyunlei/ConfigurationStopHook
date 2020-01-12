@@ -13,7 +13,6 @@ import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.openapi.actionSystem.CommonShortcuts;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.CollectionListModel;
@@ -43,9 +42,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class BeforeTerminalTasksPanel extends JPanel {
     private final JCheckBox myActivateToolWindowBeforeRunCheckBox;
-    private final JBList<BeforeRunTask<?>> myList;
-    private final CollectionListModel<BeforeRunTask<?>> myModel;
-    private final List<BeforeRunTask<?>> originalTasks = new SmartList<>();
+    private final JBList<RunnerAndConfigurationSettings> myList;
+    private final CollectionListModel<RunnerAndConfigurationSettings> myModel;
+    private final List<RunnerAndConfigurationSettings> originalTasks = new SmartList<>();
     private final JPanel myPanel;
     private final Set<BeforeRunTask<?>> clonedTasks = new THashSet<>();
     private RunConfiguration myRunConfiguration;
@@ -104,12 +103,8 @@ public class BeforeTerminalTasksPanel extends JPanel {
     }
 
     private void saveTasks() {
-        List<BeforeRunTask<?>> items = myModel.getItems();
-        List<RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask> tasks =
-            items.stream()
-                .map(e -> (RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask) e)
-                .collect(Collectors.toList());
-        tasksSettings.updateTasks(myRunConfiguration, tasks);
+        List<RunnerAndConfigurationSettings> items = myModel.getItems();
+        tasksSettings.updateTasks(myRunConfiguration, items);
     }
 
     void doReset(@NotNull RunnerAndConfigurationSettings settings) {
@@ -122,26 +117,27 @@ public class BeforeTerminalTasksPanel extends JPanel {
         myModel.replaceAll(originalTasks);
         myActivateToolWindowBeforeRunCheckBox.setSelected(settings.isActivateToolWindowBeforeRun());
         myActivateToolWindowBeforeRunCheckBox.setEnabled(!isUnknown());
-        myPanel.setVisible(checkBeforeRunTasksAbility(false));
+        myPanel.setVisible(true);
     }
 
-    private boolean checkBeforeRunTasksAbility(boolean checkOnlyAddAction) {
-        if (isUnknown()) {
-            return false;
-        }
-
-        Set<Key> activeProviderKeys = getActiveProviderKeys();
-        for (final BeforeRunTaskProvider<BeforeRunTask> provider : getBeforeRunTaskProviders()) {
-            if (provider.createTask(myRunConfiguration) != null) {
-                if (!checkOnlyAddAction) {
-                    return true;
-                } else if (!provider.isSingleton() || !activeProviderKeys.contains(provider.getId())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    private boolean checkBeforeRunTasksAbility(boolean checkOnlyAddAction) {
+//        if (isUnknown()) {
+//            return false;
+//        }
+//
+//        Set<Key> activeProviderKeys = getActiveProviderKeys();
+//        for (final BeforeRunTaskProvider<BeforeRunTask> provider : getBeforeRunTaskProviders()) {
+//            if (provider.createTask(myRunConfiguration) != null) {
+//                if (!checkOnlyAddAction) {
+//                    return true;
+//                } else if (!provider.isSingleton() || !activeProviderKeys.contains(provider
+//                .getId())) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     private boolean isUnknown() {
         return myRunConfiguration instanceof UnknownRunConfiguration;
@@ -152,11 +148,11 @@ public class BeforeTerminalTasksPanel extends JPanel {
             return;
         }
 
-        Set<Key> activeProviderKeys = getActiveProviderKeys();
+//        Set<Key> activeProviderKeys = getActiveProviderKeys();
         ListPopup listPopup = null;
         Project project = myRunConfiguration.getProject();
         for (final BeforeRunTaskProvider<BeforeRunTask> provider : getBeforeRunTaskProviders()) {
-            if (provider.createTask(myRunConfiguration) == null || activeProviderKeys.contains(provider.getId()) && provider.isSingleton()) {
+            if (provider.createTask(myRunConfiguration) == null || provider.isSingleton()) {
                 continue;
             }
 
@@ -172,7 +168,7 @@ public class BeforeTerminalTasksPanel extends JPanel {
                             (RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask) provider.createTask(myRunConfiguration);
 
                     task.setSettingsWithTarget(selectedSettings, selectedTarget);
-                    addTask(task);
+                    addTask(selectedSettings);
                 }
             });
         }
@@ -192,27 +188,30 @@ public class BeforeTerminalTasksPanel extends JPanel {
         return RunConfigurationBeforeRunProvider.class::isInstance;
     }
 
-    public void addTask(@NotNull BeforeRunTask task) {
+    public void addTask(@NotNull RunnerAndConfigurationSettings task) {
         myModel.add(task);
     }
 
-    @NotNull
-    private Set<Key> getActiveProviderKeys() {
-        Set<Key> result = new THashSet<>();
-        for (BeforeRunTask task : myModel.getItems()) {
-            result.add(task.getProviderId());
-        }
-        return result;
-    }
+//    @NotNull
+//    private Set<Key> getActiveProviderKeys() {
+//        Set<Key> result = new THashSet<>();
+//        for (RunnerAndConfigurationSettings task : myModel.getItems()) {
+//            result.add(task.ge);
+//        }
+//        return result;
+//    }
 
     private class MyListCellRenderer extends JBList.StripedListCellRenderer {
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList list, Object value, int index,
+            boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value instanceof BeforeRunTask) {
                 BeforeRunTask task = (BeforeRunTask) value;
                 @SuppressWarnings("unchecked")
-                BeforeRunTaskProvider<BeforeRunTask> provider = BeforeRunTaskProvider.getProvider(myRunConfiguration.getProject(), task.getProviderId());
+                BeforeRunTaskProvider<BeforeRunTask> provider =
+                    BeforeRunTaskProvider.getProvider(myRunConfiguration.getProject(),
+                        task.getProviderId());
                 if (provider != null) {
                     Icon icon = provider.getTaskIcon(task);
                     setIcon(icon != null ? icon : provider.getIcon());

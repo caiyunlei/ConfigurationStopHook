@@ -1,18 +1,19 @@
 package com.cyl.idea.plugin.settings;
 
 import com.cyl.idea.plugin.MyProjectUtil;
+import com.cyl.idea.plugin.MyRunConfigUtil;
+import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
-import com.intellij.execution.impl.RunConfigurationBeforeRunProvider;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class TasksSettings implements PersistentStateComponent<TasksSettings> {
     public Map<String, List<String>> runConfigIdBeforeRunTaskIdMap = new HashMap<>();
     private Map<RunConfiguration,
-        List<RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask>> beforeTerminalTasks = new HashMap<>();
+        List<RunnerAndConfigurationSettings>> beforeTerminalTasks = new HashMap<>();
 
     public Map<String, List<String>> getRunConfigIdBeforeRunTaskIdMap() {
         return runConfigIdBeforeRunTaskIdMap;
@@ -34,27 +35,29 @@ public class TasksSettings implements PersistentStateComponent<TasksSettings> {
         return ServiceManager.getService(project, TasksSettings.class);
     }
 
-    public List<RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask> getBeforeTerminalTasks(RunConfiguration settings) {
-        return beforeTerminalTasks.getOrDefault(settings, Lists.newArrayList());
+    public List<RunnerAndConfigurationSettings> getBeforeTerminalTasks(RunConfiguration settings) {
+        List<String> taskNames = runConfigIdBeforeRunTaskIdMap.get(settings.getName());
+        if (taskNames != null) {
+            return taskNames.stream().map(MyRunConfigUtil::getRunConfigurationByName).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     public void updateTasks(RunConfiguration settings,
-        List<RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask> tasks) {
+        List<RunnerAndConfigurationSettings> tasks) {
         List<String> taskNames = extraTaskNames(tasks);
         runConfigIdBeforeRunTaskIdMap.put(settings.getName(), taskNames);
-        beforeTerminalTasks.put(settings, tasks);
     }
 
-    private List<String> extraTaskNames(List<RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask> tasks) {
+    private List<String> extraTaskNames(List<RunnerAndConfigurationSettings> tasks) {
         return tasks.stream()
-            .map(beforeRunTask -> beforeRunTask.getSettingsWithTarget().getFirst().getName())
+            .map(RunnerAndConfigurationSettings::getName)
             .collect(Collectors.toList());
     }
 
     @Nullable
     @Override
     public TasksSettings getState() {
-        System.out.println("get state");
         return this;
     }
 
