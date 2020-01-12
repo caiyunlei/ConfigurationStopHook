@@ -11,18 +11,17 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
-import java.awt.BorderLayout;
-import java.util.List;
-import java.util.Map;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 public class ProjectSettingPage implements Configurable {
     private static final String CONFIG_PAGE_DISPLAY_NAME = "Task Before Stop";
@@ -40,8 +39,8 @@ public class ProjectSettingPage implements Configurable {
         JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftTree, myRightPanel);
         splitPanel.setDividerLocation(250);
 
-        myWholePanel.setLayout(new BorderLayout());
         myWholePanel = new JPanel();
+        myWholePanel.setLayout(new BorderLayout());
         myWholePanel.add(splitPanel);
     }
 
