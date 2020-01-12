@@ -25,16 +25,4 @@
     <projectConfigurable instance="com.cyl.intellij.plugin.settings.ProjectSettingPage"/>
     <projectService serviceImplementation="com.cyl.intellij.plugin.settings.TasksSettings"/>
   </extensions>
-
-  <actions>
-    <action id="com.cyl.intellij.plugin.actions.BeforeTerminalTasksAction"
-            class="com.cyl.intellij.plugin.actions.BeforeTerminalTasksAction"
-            text="RunTasksBeforeStopApplication"
-            description="Run tasks before stop application, just run tasks before launch."
-            icon="AllIcons.Actions.Suspend">
-      <add-to-group group-id="RunMenu" anchor="first"/>
-      <add-to-group group-id="ToolbarRunGroup" anchor="first"/>
-    </action>
-  </actions>
-
 </idea-plugin>
