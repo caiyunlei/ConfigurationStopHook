@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>com.cyl.idea.plugin.RunTasksBeforeStopApplication</id>
+  <id>com.cyl.idea.plugin.BeforeStopTasks</id>
   <name>run tasks before stop application</name>
   <version>1.0</version>
   <vendor email="cyl1014053448@gmail.com">Yunlei Cai</vendor>
