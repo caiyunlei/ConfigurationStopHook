@@ -22,7 +22,7 @@
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable instance="com.cyl.intellij.plugin.settings.ProjectSettingPage"/>
+    <projectConfigurable instance="com.cyl.intellij.plugin.settings.SettingPage"/>
     <projectService serviceImplementation="com.cyl.intellij.plugin.settings.TasksSettings"/>
   </extensions>
 </idea-plugin>

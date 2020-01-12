@@ -23,13 +23,13 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
-public class ProjectSettingPage implements Configurable {
+public class SettingPage implements Configurable {
     private static final String CONFIG_PAGE_DISPLAY_NAME = "Task Before Stop";
     private JPanel myWholePanel;
     private Tree myLeftTree;
     private JPanel myRightPanel;
 
-    public ProjectSettingPage(PropertiesComponent propertiesComponent) {
+    public SettingPage(PropertiesComponent propertiesComponent) {
         myLeftTree = new Tree();
         myLeftTree.setShowsRootHandles(true);
         myLeftTree.setCellRenderer(new TreeCellRender(getRunManager()));
