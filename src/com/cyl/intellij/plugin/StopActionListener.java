@@ -26,7 +26,7 @@ public class StopActionListener implements AnActionListener, Disposable {
 
     private boolean isStopAction(AnAction action) {
         String myIdeaActionID = ActionManager.getInstance().getId(action);
-        return myIdeaActionID.equals(STOP_ACTION_ID);
+        return STOP_ACTION_ID.equals(myIdeaActionID);
     }
 
     @Override
