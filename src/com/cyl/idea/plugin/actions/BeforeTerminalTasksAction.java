@@ -1,7 +1,6 @@
 package com.cyl.idea.plugin.actions;
 
 import com.cyl.idea.plugin.settings.TasksSettings;
-import com.intellij.execution.BeforeRunTask;
 import com.intellij.execution.Executor;
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
@@ -29,14 +28,13 @@ public class BeforeTerminalTasksAction extends StopAction {
             RunManager.getInstance(myProject).getSelectedConfiguration();
         RunConfiguration runConfiguration = settings.getConfiguration();
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
-        List<BeforeRunTask<?>> beforeRunTasks =
+        List<RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask> beforeRunTasks =
             TasksSettings.getInstance().getBeforeTerminalTasks(runConfiguration);
 
-        for (BeforeRunTask<?> beforeRunTask : beforeRunTasks) {
-            if (beforeRunTask instanceof RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask) {
-                RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask runBeforeRun =
-                        (RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask) beforeRunTask;
-                RunnerAndConfigurationSettings tasksSettings = runBeforeRun.getSettings();
+        for (RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask beforeRunTask :
+            beforeRunTasks) {
+            if (beforeRunTask != null) {
+                RunnerAndConfigurationSettings tasksSettings = beforeRunTask.getSettings();
                 ExecutionUtil.runConfiguration(tasksSettings, executor);
             }
         }
