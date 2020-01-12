@@ -52,7 +52,8 @@ public class BeforeTerminalTasksPanel extends JPanel {
     private final TasksSettings tasksSettings;
 
     public BeforeTerminalTasksPanel(RunnerAndConfigurationSettings settings) {
-        tasksSettings = TasksSettings.getInstance();
+        tasksSettings =
+            TasksSettings.getInstance();
         myModel = new CollectionListModel<>();
         myList = new JBList<>(myModel);
         myList.getEmptyText().setText(ExecutionBundle.message("before.launch.panel.empty"));
@@ -104,7 +105,11 @@ public class BeforeTerminalTasksPanel extends JPanel {
 
     private void saveTasks() {
         List<BeforeRunTask<?>> items = myModel.getItems();
-        tasksSettings.updateTasks(myRunConfiguration, items);
+        List<RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask> tasks =
+            items.stream()
+                .map(e -> (RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask) e)
+                .collect(Collectors.toList());
+        tasksSettings.updateTasks(myRunConfiguration, tasks);
     }
 
     void doReset(@NotNull RunnerAndConfigurationSettings settings) {
