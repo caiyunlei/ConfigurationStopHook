@@ -18,6 +18,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <projectConfigurable instance="com.cyl.idea.plugin.settings.ProjectSettingPage"/>
+    <projectService serviceImplementation="com.cyl.idea.plugin.settings.TasksSettings"/>
   </extensions>
 
   <actions>
