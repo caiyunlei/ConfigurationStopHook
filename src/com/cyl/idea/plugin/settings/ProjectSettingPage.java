@@ -25,31 +25,30 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 public class ProjectSettingPage implements Configurable {
+    private static final String CONFIG_PAGE_DISPLAY_NAME = "Task Before Stop";
     private JPanel myWholePanel;
-    private Tree myConfigurationTree;
+    private Tree myLeftTree;
     private JPanel myRightPanel;
 
     public ProjectSettingPage(PropertiesComponent propertiesComponent) {
-        myWholePanel = new JPanel();
-        myWholePanel.setLayout(new BorderLayout());
-
-        myConfigurationTree = new Tree();
-        myConfigurationTree.setShowsRootHandles(true);
-        myConfigurationTree.setCellRenderer(new TreeCellRender(getRunManager()));
+        myLeftTree = new Tree();
+        myLeftTree.setShowsRootHandles(true);
+        myLeftTree.setCellRenderer(new TreeCellRender(getRunManager()));
 
         myRightPanel = new JPanel(new BorderLayout());
 
-        JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myConfigurationTree,
-            myRightPanel);
+        JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftTree, myRightPanel);
         splitPanel.setDividerLocation(250);
 
+        myWholePanel.setLayout(new BorderLayout());
+        myWholePanel = new JPanel();
         myWholePanel.add(splitPanel);
     }
 
     @Nls
     @Override
     public String getDisplayName() {
-        return "TasksBeforeStopApplication";
+        return CONFIG_PAGE_DISPLAY_NAME;
     }
 
     @Override
@@ -60,17 +59,17 @@ public class ProjectSettingPage implements Configurable {
 
     private void initTree() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
-        myConfigurationTree.setModel(new DefaultTreeModel(root));
+        myLeftTree.setModel(new DefaultTreeModel(root));
 
         buildTreeNode(root);
 
-        myConfigurationTree.expandRow(0);
-        myConfigurationTree.setRootVisible(false);
-        TreeUtil.expandAll(myConfigurationTree);
+        myLeftTree.expandRow(0);
+        myLeftTree.setRootVisible(false);
+        TreeUtil.expandAll(myLeftTree);
 
-        myConfigurationTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
+        myLeftTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
             //com/intellij/execution/impl/RunConfigurable.kt
-            TreePath selectionPath = myConfigurationTree.getSelectionPath();
+            TreePath selectionPath = myLeftTree.getSelectionPath();
             if (selectionPath != null) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
                 getSafeUserObject(node);
@@ -115,15 +114,12 @@ public class ProjectSettingPage implements Configurable {
 
     @Override
     public boolean isModified() {
-
-
         return true;
     }
 
     @Override
     public void apply() {
     }
-
 
     @Override
     public void reset() {
@@ -132,8 +128,7 @@ public class ProjectSettingPage implements Configurable {
     private Object getSafeUserObject(DefaultMutableTreeNode node) {
         Object userObject = node.getUserObject();
         if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
-            BeforeTerminalTasksPanel newRightPanel =
-                new BeforeTerminalTasksPanel((RunnerAndConfigurationSettings) userObject);
+            BeforeTerminalTasksPanel newRightPanel = new BeforeTerminalTasksPanel((RunnerAndConfigurationSettings) userObject);
             updateRightPanel(newRightPanel);
         }
         return userObject;

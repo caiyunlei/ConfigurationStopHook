@@ -8,6 +8,7 @@ public class MyProjectUtil {
   }
 
   public static Project getCurrentProject() {
+    //todo:bug
     return ProjectUtil.getOpenProjects()[0];
   }
 }

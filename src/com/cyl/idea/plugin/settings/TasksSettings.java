@@ -20,8 +20,6 @@ import org.jetbrains.annotations.Nullable;
 @State(name = "BeforeTerminalTasksConfiguration", storages = @Storage("BeforeTerminalTasks.xml"))
 public class TasksSettings implements PersistentStateComponent<TasksSettings> {
     public Map<String, List<String>> runConfigIdBeforeRunTaskIdMap = new HashMap<>();
-    private Map<RunConfiguration,
-        List<RunnerAndConfigurationSettings>> beforeTerminalTasks = new HashMap<>();
 
     public Map<String, List<String>> getRunConfigIdBeforeRunTaskIdMap() {
         return runConfigIdBeforeRunTaskIdMap;
@@ -43,8 +41,7 @@ public class TasksSettings implements PersistentStateComponent<TasksSettings> {
         return new ArrayList<>();
     }
 
-    public void updateTasks(RunConfiguration settings,
-        List<RunnerAndConfigurationSettings> tasks) {
+    public void updateTasks(RunConfiguration settings, List<RunnerAndConfigurationSettings> tasks) {
         List<String> taskNames = extraTaskNames(tasks);
         runConfigIdBeforeRunTaskIdMap.put(settings.getName(), taskNames);
     }
@@ -63,6 +60,7 @@ public class TasksSettings implements PersistentStateComponent<TasksSettings> {
 
     @Override
     public void loadState(@NotNull TasksSettings state) {
+        //todo:optimize
         runConfigIdBeforeRunTaskIdMap = state.getRunConfigIdBeforeRunTaskIdMap();
     }
 }
