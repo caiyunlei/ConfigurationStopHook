@@ -22,13 +22,11 @@ import com.intellij.ui.components.JBList;
 import com.intellij.ui.scale.JBUIScale;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import gnu.trove.THashSet;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.swing.Icon;
@@ -42,24 +40,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class BeforeTerminalTasksPanel extends JPanel {
     private final JCheckBox myActivateToolWindowBeforeRunCheckBox;
-    private final JBList<RunnerAndConfigurationSettings> myList;
     private final CollectionListModel<RunnerAndConfigurationSettings> myModel;
     private final List<RunnerAndConfigurationSettings> originalTasks = new SmartList<>();
     private final JPanel myPanel;
-    private final Set<BeforeRunTask<?>> clonedTasks = new THashSet<>();
     private RunConfiguration myRunConfiguration;
     private final TasksSettings tasksSettings;
 
     public BeforeTerminalTasksPanel(RunnerAndConfigurationSettings settings) {
-        tasksSettings =
-            TasksSettings.getInstance();
-        myModel = new CollectionListModel<>();
-        myList = new JBList<>(myModel);
-        myList.getEmptyText().setText(ExecutionBundle.message("before.launch.panel.empty"));
-        myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        myList.setCellRenderer(new BeforeTerminalTasksPanel.MyListCellRenderer());
-        myList.setVisibleRowCount(10);
+        tasksSettings = TasksSettings.getInstance();
 
+        myModel = new CollectionListModel<>();
         myModel.addListDataListener(new ListDataListener() {
             @Override
             public void intervalAdded(ListDataEvent e) {
@@ -76,11 +66,16 @@ public class BeforeTerminalTasksPanel extends JPanel {
             }
         });
 
+        JBList<RunnerAndConfigurationSettings> myList = new JBList<>(myModel);
+        myList.getEmptyText().setText(ExecutionBundle.message("before.launch.panel.empty"));
+        myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        myList.setCellRenderer(new BeforeTerminalTasksPanel.MyListCellRenderer());
+        myList.setVisibleRowCount(10);
+
         ToolbarDecorator myDecorator = ToolbarDecorator.createDecorator(myList);
         if (!SystemInfo.isMac) {
             myDecorator.setAsUsualTopToolbar();
         }
-
         myDecorator.setAddAction(this::doAddAction);
         myDecorator.setAddActionUpdater(e -> true);
 
@@ -92,24 +87,21 @@ public class BeforeTerminalTasksPanel extends JPanel {
         setLayout(new BorderLayout());
         add(myPanel, BorderLayout.CENTER);
 
-        myActivateToolWindowBeforeRunCheckBox = new JCheckBox(ExecutionBundle.message("configuration.activate.toolwindow.before.run"));
-
         JPanel checkboxPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, JBUIScale.scale(5), JBUIScale.scale(5)));
+        myActivateToolWindowBeforeRunCheckBox = new JCheckBox(ExecutionBundle.message("configuration.activate.toolwindow.before.run"));
         checkboxPanel.add(myActivateToolWindowBeforeRunCheckBox);
         add(checkboxPanel, BorderLayout.SOUTH);
+
         if (settings != null) {
             doReset(settings);
         }
     }
 
     private void saveTasks() {
-        List<RunnerAndConfigurationSettings> items = myModel.getItems();
-        tasksSettings.updateTasks(myRunConfiguration, items);
+        tasksSettings.updateTasks(myRunConfiguration, myModel.getItems());
     }
 
     void doReset(@NotNull RunnerAndConfigurationSettings settings) {
-        clonedTasks.clear();
-
         myRunConfiguration = settings.getConfiguration();
 
         originalTasks.clear();
@@ -142,13 +134,8 @@ public class BeforeTerminalTasksPanel extends JPanel {
             listPopup = ConfigurationSelectionUtil.createPopup(project, runManager, configurations, (selectedConfigs, selectedTarget) -> {
                 RunConfiguration selectedConfig = ContainerUtil.getFirstItem(selectedConfigs);
                 RunnerAndConfigurationSettings selectedSettings = selectedConfig == null ? null : runManager.getSettings(selectedConfig);
-
                 if (selectedSettings != null) {
-                    RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask task =
-                            (RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask) provider.createTask(myRunConfiguration);
-
-                    task.setSettingsWithTarget(selectedSettings, selectedTarget);
-                    addTask(selectedSettings);
+                    myModel.add(selectedSettings);
                 }
             });
         }
@@ -158,6 +145,7 @@ public class BeforeTerminalTasksPanel extends JPanel {
 
     @NotNull
     private List<BeforeRunTaskProvider<BeforeRunTask>> getBeforeRunTaskProviders() {
+        //todo:change to get runSettings
         List<BeforeRunTaskProvider<BeforeRunTask>> extensionList =
                 BeforeRunTaskProvider.EXTENSION_POINT_NAME.getExtensionList(myRunConfiguration.getProject());
         return extensionList.stream().filter(anotherConfiguration()).collect(Collectors.toList());
@@ -166,10 +154,6 @@ public class BeforeTerminalTasksPanel extends JPanel {
     @NotNull
     private Predicate<BeforeRunTaskProvider<BeforeRunTask>> anotherConfiguration() {
         return RunConfigurationBeforeRunProvider.class::isInstance;
-    }
-
-    public void addTask(@NotNull RunnerAndConfigurationSettings task) {
-        myModel.add(task);
     }
 
     private class MyListCellRenderer extends JBList.StripedListCellRenderer {

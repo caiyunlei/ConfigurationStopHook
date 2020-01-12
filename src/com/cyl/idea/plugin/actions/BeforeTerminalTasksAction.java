@@ -24,15 +24,12 @@ public class BeforeTerminalTasksAction extends StopAction {
     public void actionPerformed(AnActionEvent e) {
         Project myProject = e.getProject();
 
-        RunnerAndConfigurationSettings stopSettings =
-            RunManager.getInstance(myProject).getSelectedConfiguration();
+        RunnerAndConfigurationSettings stopSettings = RunManager.getInstance(myProject).getSelectedConfiguration();
         RunConfiguration runConfiguration = stopSettings.getConfiguration();
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
 
-        List<RunnerAndConfigurationSettings> beforeRunConfigurations =
-            TasksSettings.getInstance().getBeforeTerminalTasks(runConfiguration);
-        for (RunnerAndConfigurationSettings runnerAndConfigurationSettings :
-            beforeRunConfigurations) {
+        List<RunnerAndConfigurationSettings> beforeRunConfigurations = TasksSettings.getInstance().getBeforeTerminalTasks(runConfiguration);
+        for (RunnerAndConfigurationSettings runnerAndConfigurationSettings : beforeRunConfigurations) {
             if (runnerAndConfigurationSettings != null) {
                 ExecutionUtil.runConfiguration(runnerAndConfigurationSettings, executor);
             }
