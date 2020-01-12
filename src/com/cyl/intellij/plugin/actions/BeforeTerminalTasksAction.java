@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class BeforeTerminalTasksAction extends StopAction {
-
     @Override
     public void update(@NotNull AnActionEvent e) {
         super.update(e);
@@ -23,9 +22,12 @@ public class BeforeTerminalTasksAction extends StopAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        Project myProject = e.getProject();
+        runTasks(e.getProject());
+        super.actionPerformed(e);
+    }
 
-        RunnerAndConfigurationSettings stopSettings = RunManager.getInstance(myProject).getSelectedConfiguration();
+    public static void runTasks(Project p) {
+        RunnerAndConfigurationSettings stopSettings = RunManager.getInstance(p).getSelectedConfiguration();
         RunConfiguration runConfiguration = stopSettings.getConfiguration();
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
 
@@ -35,7 +37,5 @@ public class BeforeTerminalTasksAction extends StopAction {
                 ExecutionUtil.runConfiguration(runnerAndConfigurationSettings, executor);
             }
         }
-
-        super.actionPerformed(e);
     }
 }
