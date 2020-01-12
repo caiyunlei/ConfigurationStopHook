@@ -1,4 +1,4 @@
-package com.cyl.idea.plugin.panels;
+package com.cyl.intellij.plugin.panels;
 
 import com.intellij.execution.ProgramRunnerUtil;
 import com.intellij.execution.RunnerAndConfigurationSettings;
@@ -12,10 +12,10 @@ import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.util.ui.EmptyIcon;
-import javax.swing.Icon;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * todo:直接使用kt文件

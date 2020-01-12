@@ -1,7 +1,7 @@
-package com.cyl.idea.plugin.settings;
+package com.cyl.intellij.plugin.settings;
 
-import com.cyl.idea.plugin.MyProjectUtil;
-import com.cyl.idea.plugin.MyRunConfigUtil;
+import com.cyl.intellij.plugin.MyProjectUtil;
+import com.cyl.intellij.plugin.MyRunConfigUtil;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -9,13 +9,14 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @State(name = "BeforeTerminalTasksConfiguration", storages = @Storage("BeforeTerminalTasks.xml"))
 public class TasksSettings implements PersistentStateComponent<TasksSettings> {

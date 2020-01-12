@@ -1,6 +1,6 @@
-package com.cyl.idea.plugin.panels;
+package com.cyl.intellij.plugin.panels;
 
-import com.cyl.idea.plugin.settings.TasksSettings;
+import com.cyl.intellij.plugin.settings.TasksSettings;
 import com.intellij.execution.BeforeRunTask;
 import com.intellij.execution.BeforeRunTaskProvider;
 import com.intellij.execution.ExecutionBundle;
@@ -22,21 +22,16 @@ import com.intellij.ui.components.JBList;
 import com.intellij.ui.scale.JBUIScale;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.swing.Icon;
-import javax.swing.JCheckBox;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import org.jetbrains.annotations.NotNull;
 
 public class BeforeTerminalTasksPanel extends JPanel {
     private final JCheckBox myActivateToolWindowBeforeRunCheckBox;
