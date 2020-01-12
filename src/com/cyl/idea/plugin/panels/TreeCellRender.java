@@ -12,10 +12,10 @@ import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.util.ui.EmptyIcon;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * todo:直接使用kt文件
@@ -88,6 +88,7 @@ public class TreeCellRender extends ColoredTreeCellRenderer {
             }
             LayeredIcon layeredIcon = new LayeredIcon(getIcon(), icon);
             setIcon(layeredIcon);
+            setIconTextGap(0);
         }
     }
 
@@ -98,6 +99,8 @@ public class TreeCellRender extends ColoredTreeCellRenderer {
             return ((ConfigurationFactory) userObject).getName();
         } else if (userObject instanceof SingleConfigurationConfigurable) {
             return ((SingleConfigurationConfigurable) userObject).getNameText();
+        } else if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
+            return ((RunnerAndConfigurationSettingsImpl) userObject).getName();
         } else {
             return userObject.toString();
         }
