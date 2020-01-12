@@ -24,19 +24,24 @@ import com.intellij.ui.scale.JBUIScale;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.swing.Icon;
+import javax.swing.JCheckBox;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import org.jetbrains.annotations.NotNull;
 
-public class TasksBeforeStopApplicationPanel extends JPanel {
+public class BeforeTerminalTasksPanel extends JPanel {
     private final JCheckBox myActivateToolWindowBeforeRunCheckBox;
     private final JBList<BeforeRunTask<?>> myList;
     private final CollectionListModel<BeforeRunTask<?>> myModel;
@@ -45,13 +50,13 @@ public class TasksBeforeStopApplicationPanel extends JPanel {
     private final Set<BeforeRunTask<?>> clonedTasks = new THashSet<>();
     private RunConfiguration myRunConfiguration;
 
-    public TasksBeforeStopApplicationPanel(RunnerAndConfigurationSettings settings) {
+    public BeforeTerminalTasksPanel(RunnerAndConfigurationSettings settings) {
         myModel = new CollectionListModel<>();
         myList = new JBList<>(myModel);
         myList.getEmptyText().setText(ExecutionBundle.message("before.launch.panel.empty"));
         myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        myList.setCellRenderer(new TasksBeforeStopApplicationPanel.MyListCellRenderer());
-        myList.setVisibleRowCount(4);
+        myList.setCellRenderer(new BeforeTerminalTasksPanel.MyListCellRenderer());
+        myList.setVisibleRowCount(10);
 
         myModel.addListDataListener(new ListDataListener() {
             @Override
