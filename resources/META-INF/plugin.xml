@@ -21,9 +21,11 @@
   </extensions>
 
   <actions>
-    <action id="com.cyl.idea.plugin.actions.RunTasksBeforeStopApplicationAction"
-            class="com.cyl.idea.plugin.actions.RunTasksBeforeStopApplicationAction" text="RunTasksBeforeStopApplication"
-            description="Run tasks before stop application, just run tasks before launch." icon="AllIcons.Actions.Suspend">
+    <action id="com.cyl.idea.plugin.actions.BeforeTerminalTasksAction"
+            class="com.cyl.idea.plugin.actions.BeforeTerminalTasksAction"
+            text="RunTasksBeforeStopApplication"
+            description="Run tasks before stop application, just run tasks before launch."
+            icon="AllIcons.Actions.Suspend">
       <add-to-group group-id="RunMenu" anchor="first"/>
       <add-to-group group-id="ToolbarRunGroup" anchor="first"/>
     </action>

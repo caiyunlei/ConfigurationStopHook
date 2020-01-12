@@ -12,12 +12,10 @@ import com.intellij.execution.impl.RunConfigurationBeforeRunProvider;
 import com.intellij.execution.runners.ExecutionUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-public class RunTasksBeforeStopApplicationAction extends StopAction {
-
+public class BeforeTerminalTasksAction extends StopAction {
 
     @Override
     public void update(@NotNull AnActionEvent e) {
@@ -27,7 +25,8 @@ public class RunTasksBeforeStopApplicationAction extends StopAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         Project myProject = e.getProject();
-        RunnerAndConfigurationSettings settings = RunManager.getInstance(myProject).getSelectedConfiguration();
+        RunnerAndConfigurationSettings settings =
+            RunManager.getInstance(myProject).getSelectedConfiguration();
         RunConfiguration runConfiguration = settings.getConfiguration();
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
         List<BeforeRunTask<?>> beforeRunTasks = TasksSettings.getBeforeTerminalTasks(runConfiguration);

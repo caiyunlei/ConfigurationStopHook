@@ -1,6 +1,6 @@
 package com.cyl.idea.plugin.settings;
 
-import com.cyl.idea.plugin.panels.TasksBeforeStopApplicationPanel;
+import com.cyl.idea.plugin.panels.BeforeTerminalTasksPanel;
 import com.cyl.idea.plugin.panels.TreeCellRender;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationType;
@@ -12,16 +12,19 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.*;
-import java.awt.*;
-import java.util.Enumeration;
+import java.awt.BorderLayout;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
 public class ProjectSettingPage implements Configurable {
     private JPanel myWholePanel;
@@ -130,13 +133,14 @@ public class ProjectSettingPage implements Configurable {
     private Object getSafeUserObject(DefaultMutableTreeNode node) {
         Object userObject = node.getUserObject();
         if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
-            TasksBeforeStopApplicationPanel newRightPanel = new TasksBeforeStopApplicationPanel((RunnerAndConfigurationSettings) userObject);
+            BeforeTerminalTasksPanel newRightPanel =
+                new BeforeTerminalTasksPanel((RunnerAndConfigurationSettings) userObject);
             updateRightPanel(newRightPanel);
         }
         return userObject;
     }
 
-    private void updateRightPanel(TasksBeforeStopApplicationPanel newRightPanel) {
+    private void updateRightPanel(BeforeTerminalTasksPanel newRightPanel) {
         myRightPanel.removeAll();
         myRightPanel.add(newRightPanel, BorderLayout.CENTER);
     }
