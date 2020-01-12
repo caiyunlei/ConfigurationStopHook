@@ -29,7 +29,8 @@ public class BeforeTerminalTasksAction extends StopAction {
             RunManager.getInstance(myProject).getSelectedConfiguration();
         RunConfiguration runConfiguration = settings.getConfiguration();
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
-        List<BeforeRunTask<?>> beforeRunTasks = TasksSettings.getBeforeTerminalTasks(runConfiguration);
+        List<BeforeRunTask<?>> beforeRunTasks =
+            TasksSettings.getInstance().getBeforeTerminalTasks(runConfiguration);
 
         for (BeforeRunTask<?> beforeRunTask : beforeRunTasks) {
             if (beforeRunTask instanceof RunConfigurationBeforeRunProvider.RunConfigurableBeforeRunTask) {

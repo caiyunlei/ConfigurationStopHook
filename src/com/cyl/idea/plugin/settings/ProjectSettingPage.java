@@ -1,5 +1,6 @@
 package com.cyl.idea.plugin.settings;
 
+import com.cyl.idea.plugin.MyProjectUtil;
 import com.cyl.idea.plugin.panels.BeforeTerminalTasksPanel;
 import com.cyl.idea.plugin.panels.TreeCellRender;
 import com.intellij.execution.RunnerAndConfigurationSettings;
@@ -8,8 +9,6 @@ import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
 import java.awt.BorderLayout;
@@ -18,7 +17,6 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -30,22 +28,22 @@ public class ProjectSettingPage implements Configurable {
     private JPanel myWholePanel;
     private Tree myConfigurationTree;
     private JPanel myRightPanel;
-//    private PropertiesComponent myPropertiesComponent;
 
     public ProjectSettingPage(PropertiesComponent propertiesComponent) {
         myWholePanel = new JPanel();
         myWholePanel.setLayout(new BorderLayout());
 
-        myRightPanel = new JPanel(new BorderLayout());
-
         myConfigurationTree = new Tree();
         myConfigurationTree.setShowsRootHandles(true);
         myConfigurationTree.setCellRenderer(new TreeCellRender(getRunManager()));
 
-        JSplitPane splitPane = new JSplitPane(SwingConstants.VERTICAL, myConfigurationTree, myRightPanel);
-        splitPane.setDividerLocation(250);
+        myRightPanel = new JPanel(new BorderLayout());
 
-        myWholePanel.add(splitPane);
+        JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myConfigurationTree,
+            myRightPanel);
+        splitPanel.setDividerLocation(250);
+
+        myWholePanel.add(splitPanel);
     }
 
     @Nls
@@ -112,19 +110,20 @@ public class ProjectSettingPage implements Configurable {
 
     @NotNull
     private RunManagerImpl getRunManager() {
-        Project[] projects = ProjectManager.getInstance().getOpenProjects();
-        //todo:multiple projects
-        return (RunManagerImpl) RunManagerImpl.getInstance(projects[0]);
+        return (RunManagerImpl) RunManagerImpl.getInstance(MyProjectUtil.getCurrentProject());
     }
 
     @Override
     public boolean isModified() {
-        return false;
+
+
+        return true;
     }
 
     @Override
     public void apply() {
     }
+
 
     @Override
     public void reset() {

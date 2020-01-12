@@ -49,8 +49,10 @@ public class BeforeTerminalTasksPanel extends JPanel {
     private final JPanel myPanel;
     private final Set<BeforeRunTask<?>> clonedTasks = new THashSet<>();
     private RunConfiguration myRunConfiguration;
+    private final TasksSettings tasksSettings;
 
     public BeforeTerminalTasksPanel(RunnerAndConfigurationSettings settings) {
+        tasksSettings = TasksSettings.getInstance();
         myModel = new CollectionListModel<>();
         myList = new JBList<>(myModel);
         myList.getEmptyText().setText(ExecutionBundle.message("before.launch.panel.empty"));
@@ -102,7 +104,7 @@ public class BeforeTerminalTasksPanel extends JPanel {
 
     private void saveTasks() {
         List<BeforeRunTask<?>> items = myModel.getItems();
-        TasksSettings.updateTasks(myRunConfiguration, items);
+        tasksSettings.updateTasks(myRunConfiguration, items);
     }
 
     void doReset(@NotNull RunnerAndConfigurationSettings settings) {
@@ -111,7 +113,7 @@ public class BeforeTerminalTasksPanel extends JPanel {
         myRunConfiguration = settings.getConfiguration();
 
         originalTasks.clear();
-        originalTasks.addAll(TasksSettings.getBeforeTerminalTasks(myRunConfiguration));
+        originalTasks.addAll(tasksSettings.getBeforeTerminalTasks(myRunConfiguration));
         myModel.replaceAll(originalTasks);
         myActivateToolWindowBeforeRunCheckBox.setSelected(settings.isActivateToolWindowBeforeRun());
         myActivateToolWindowBeforeRunCheckBox.setEnabled(!isUnknown());
