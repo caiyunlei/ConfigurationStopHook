@@ -1,4 +1,4 @@
-package com.cyl.idea.plugin;
+package com.cyl.intellij.plugin;
 
 import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.openapi.project.Project;

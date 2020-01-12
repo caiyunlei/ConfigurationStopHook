@@ -1,8 +1,8 @@
-package com.cyl.idea.plugin.settings;
+package com.cyl.intellij.plugin.settings;
 
-import com.cyl.idea.plugin.MyProjectUtil;
-import com.cyl.idea.plugin.panels.BeforeTerminalTasksPanel;
-import com.cyl.idea.plugin.panels.TreeCellRender;
+import com.cyl.intellij.plugin.MyProjectUtil;
+import com.cyl.intellij.plugin.panels.BeforeTerminalTasksPanel;
+import com.cyl.intellij.plugin.panels.TreeCellRender;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.impl.RunManagerImpl;

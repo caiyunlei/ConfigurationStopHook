@@ -2,7 +2,7 @@
   <id>com.cyl.idea.plugin.RunTasksBeforeStopApplication</id>
   <name>run tasks before stop application</name>
   <version>1.0</version>
-  <vendor email="cyl1014053448@gmail.com">yunlei cai</vendor>
+  <vendor email="cyl1014053448@gmail.com">Yunlei Cai</vendor>
 
   <description>Run tasks before stop application, just like run tasks before launch.</description>
 
@@ -17,13 +17,13 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable instance="com.cyl.idea.plugin.settings.ProjectSettingPage"/>
-    <projectService serviceImplementation="com.cyl.idea.plugin.settings.TasksSettings"/>
+    <projectConfigurable instance="com.cyl.intellij.plugin.settings.ProjectSettingPage"/>
+    <projectService serviceImplementation="com.cyl.intellij.plugin.settings.TasksSettings"/>
   </extensions>
 
   <actions>
-    <action id="com.cyl.idea.plugin.actions.BeforeTerminalTasksAction"
-            class="com.cyl.idea.plugin.actions.BeforeTerminalTasksAction"
+    <action id="com.cyl.intellij.plugin.actions.BeforeTerminalTasksAction"
+            class="com.cyl.intellij.plugin.actions.BeforeTerminalTasksAction"
             text="RunTasksBeforeStopApplication"
             description="Run tasks before stop application, just run tasks before launch."
             icon="AllIcons.Actions.Suspend">

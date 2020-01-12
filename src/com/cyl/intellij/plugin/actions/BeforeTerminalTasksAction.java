@@ -1,6 +1,6 @@
-package com.cyl.idea.plugin.actions;
+package com.cyl.intellij.plugin.actions;
 
-import com.cyl.idea.plugin.settings.TasksSettings;
+import com.cyl.intellij.plugin.settings.TasksSettings;
 import com.intellij.execution.Executor;
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
@@ -10,8 +10,9 @@ import com.intellij.execution.executors.DefaultRunExecutor;
 import com.intellij.execution.runners.ExecutionUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class BeforeTerminalTasksAction extends StopAction {
 

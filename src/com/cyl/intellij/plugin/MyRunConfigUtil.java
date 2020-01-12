@@ -1,7 +1,8 @@
-package com.cyl.idea.plugin;
+package com.cyl.intellij.plugin;
 
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.impl.RunManagerImpl;
+
 import java.util.List;
 
 public class MyRunConfigUtil {
