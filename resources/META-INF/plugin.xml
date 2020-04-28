@@ -1,7 +1,6 @@
 <idea-plugin>
   <id>com.cyl.idea.plugin.ConfigurationStopHook</id>
   <name>ConfigurationStopHook</name>
-  <version>1.0</version>
   <vendor email="cyl1014053448@gmail.com">Yunlei Cai</vendor>
 
   <description>Run tasks before stop, just like run tasks before launch.</description>
