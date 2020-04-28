@@ -1,10 +1,10 @@
 <idea-plugin>
-  <id>com.cyl.idea.plugin.BeforeStopTasks</id>
-  <name>run tasks before stop application</name>
+  <id>com.cyl.idea.plugin.TaskStopHook</id>
+  <name>task stop hook</name>
   <version>1.0</version>
   <vendor email="cyl1014053448@gmail.com">Yunlei Cai</vendor>
 
-  <description>Run tasks before stop application, just like run tasks before launch.</description>
+  <description>Run tasks before stop, just like run tasks before launch.</description>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
 <!--    todo: change to old version-->
