@@ -8,7 +8,11 @@ public class MyProjectUtil {
   }
 
   public static Project getCurrentProject() {
-    //todo:bug
-    return ProjectUtil.getOpenProjects()[0];
+    Project[] openProjects = ProjectUtil.getOpenProjects();
+    if (openProjects.length > 0) {
+      return openProjects[0];
+    } else {
+      return null;
+    }
   }
 }

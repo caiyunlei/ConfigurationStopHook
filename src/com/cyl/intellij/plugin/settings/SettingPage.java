@@ -9,10 +9,10 @@ import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
+import com.intellij.openapi.project.Project;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -30,18 +30,6 @@ public class SettingPage implements Configurable {
     private JPanel myRightPanel;
 
     public SettingPage(PropertiesComponent propertiesComponent) {
-        myLeftTree = new Tree();
-        myLeftTree.setShowsRootHandles(true);
-        myLeftTree.setCellRenderer(new TreeCellRender(getRunManager()));
-
-        myRightPanel = new JPanel(new BorderLayout());
-
-        JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftTree, myRightPanel);
-        splitPanel.setDividerLocation(250);
-
-        myWholePanel = new JPanel();
-        myWholePanel.setLayout(new BorderLayout());
-        myWholePanel.add(splitPanel);
     }
 
     @Nls
@@ -52,6 +40,21 @@ public class SettingPage implements Configurable {
 
     @Override
     public JComponent createComponent() {
+        myLeftTree = new Tree();
+        myLeftTree.setShowsRootHandles(true);
+        RunManagerImpl runManager = getRunManager();
+        if (runManager != null) {
+            myLeftTree.setCellRenderer(new TreeCellRender(runManager));
+        }
+
+        myRightPanel = new JPanel(new BorderLayout());
+
+        JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftTree, myRightPanel);
+        splitPanel.setDividerLocation(250);
+
+        myWholePanel = new JPanel();
+        myWholePanel.setLayout(new BorderLayout());
+        myWholePanel.add(splitPanel);
         initTree();
         return myWholePanel;
     }
@@ -79,6 +82,10 @@ public class SettingPage implements Configurable {
     private void buildTreeNode(DefaultMutableTreeNode root) {
         //runConfigurable data come from here
         RunManagerImpl runManager = getRunManager();
+        if (runManager == null) {
+            return;
+        }
+
         Map<ConfigurationType, Map<String, List<RunnerAndConfigurationSettings>>> runConfigurations =
                 runManager.getConfigurationsGroupedByTypeAndFolder(true);
 
@@ -106,9 +113,13 @@ public class SettingPage implements Configurable {
         }
     }
 
-    @NotNull
     private RunManagerImpl getRunManager() {
-        return (RunManagerImpl) RunManagerImpl.getInstance(MyProjectUtil.getCurrentProject());
+        Project currentProject = MyProjectUtil.getCurrentProject();
+        if (currentProject != null) {
+            return (RunManagerImpl) RunManagerImpl.getInstance(currentProject);
+        } else {
+            return null;
+        }
     }
 
     @Override
