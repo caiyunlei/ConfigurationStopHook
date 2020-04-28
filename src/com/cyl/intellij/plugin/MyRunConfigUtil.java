@@ -1,5 +1,6 @@
 package com.cyl.intellij.plugin;
 
+import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.impl.RunManagerImpl;
 
@@ -16,7 +17,7 @@ public class MyRunConfigUtil {
   }
 
   public static List<RunnerAndConfigurationSettings> getAllRunConfigs() {
-    final RunManagerImpl runManager = (RunManagerImpl) RunManagerImpl.getInstance(MyProjectUtil.getCurrentProject());
+    final RunManager runManager = RunManagerImpl.getInstance(MyProjectUtil.getCurrentProject());
     return runManager.getAllSettings();
   }
 }
