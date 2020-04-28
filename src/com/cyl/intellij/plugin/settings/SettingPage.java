@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SettingPage implements Configurable {
-    private static final String CONFIG_PAGE_DISPLAY_NAME = "Task Before Stop";
+    private static final String CONFIG_PAGE_DISPLAY_NAME = "ConfigurationStopHook";
     private JPanel myWholePanel;
     private Tree myLeftTree;
     private JPanel myRightPanel;
