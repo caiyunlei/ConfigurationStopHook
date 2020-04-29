@@ -19,7 +19,7 @@
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable instance="com.cyl.intellij.plugin.settings.SettingPage"/>
+    <projectConfigurable instance="com.cyl.intellij.plugin.settings.SettingPage" nonDefaultProject="true" displayName="ConfigurationStopHook" />
     <projectService serviceImplementation="com.cyl.intellij.plugin.settings.TasksSettings"/>
   </extensions>
 </idea-plugin>
