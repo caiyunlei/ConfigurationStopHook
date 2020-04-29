@@ -12,10 +12,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @State(name = "BeforeTerminalTasksConfiguration", storages = @Storage("BeforeTerminalTasks.xml"))
@@ -29,8 +26,7 @@ public class TasksSettings implements PersistentStateComponent<TasksSettings> {
     public TasksSettings() {
     }
 
-    public static TasksSettings getInstance() {
-        Project project = MyProjectUtil.getCurrentProject();
+    public static TasksSettings getInstance(Project project) {
         return ServiceManager.getService(project, TasksSettings.class);
     }
 

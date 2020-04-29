@@ -40,9 +40,11 @@ public class BeforeTerminalTasksPanel extends JPanel {
     private final JPanel myPanel;
     private RunConfiguration myRunConfiguration;
     private final TasksSettings tasksSettings;
+    private Project project;
 
-    public BeforeTerminalTasksPanel(RunnerAndConfigurationSettings settings) {
-        tasksSettings = TasksSettings.getInstance();
+    public BeforeTerminalTasksPanel(RunnerAndConfigurationSettings settings, Project project) {
+        this.project = project;
+        tasksSettings = TasksSettings.getInstance(this.project);
 
         myModel = new CollectionListModel<>();
         myModel.addListDataListener(new ListDataListener() {
