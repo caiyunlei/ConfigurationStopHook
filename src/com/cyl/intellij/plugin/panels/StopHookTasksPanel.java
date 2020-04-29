@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class BeforeTerminalTasksPanel extends JPanel {
+public class StopHookTasksPanel extends JPanel {
     private final JCheckBox myActivateToolWindowBeforeRunCheckBox;
     private final CollectionListModel<RunnerAndConfigurationSettings> myModel;
     private final List<RunnerAndConfigurationSettings> originalTasks = new SmartList<>();
@@ -42,7 +42,7 @@ public class BeforeTerminalTasksPanel extends JPanel {
     private final TasksSettings tasksSettings;
     private Project project;
 
-    public BeforeTerminalTasksPanel(RunnerAndConfigurationSettings settings, Project project) {
+    public StopHookTasksPanel(RunnerAndConfigurationSettings settings, Project project) {
         this.project = project;
         tasksSettings = TasksSettings.getInstance(this.project);
 
@@ -64,9 +64,9 @@ public class BeforeTerminalTasksPanel extends JPanel {
         });
 
         JBList<RunnerAndConfigurationSettings> myList = new JBList<>(myModel);
-        myList.getEmptyText().setText(ExecutionBundle.message("before.launch.panel.empty"));
+        myList.getEmptyText().setText("There are no tasks to run before stop");
         myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        myList.setCellRenderer(new BeforeTerminalTasksPanel.MyListCellRenderer());
+        myList.setCellRenderer(new StopHookTasksPanel.MyListCellRenderer());
         myList.setVisibleRowCount(10);
 
         ToolbarDecorator myDecorator = ToolbarDecorator.createDecorator(myList);

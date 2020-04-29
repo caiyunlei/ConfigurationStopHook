@@ -1,6 +1,6 @@
 package com.cyl.intellij.plugin.settings;
 
-import com.cyl.intellij.plugin.panels.BeforeTerminalTasksPanel;
+import com.cyl.intellij.plugin.panels.StopHookTasksPanel;
 import com.cyl.intellij.plugin.panels.TreeCellRender;
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
@@ -131,13 +131,13 @@ public class SettingPage implements Configurable {
     private Object getSafeUserObject(DefaultMutableTreeNode node) {
         Object userObject = node.getUserObject();
         if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
-            BeforeTerminalTasksPanel newRightPanel = new BeforeTerminalTasksPanel((RunnerAndConfigurationSettings) userObject, project);
+            StopHookTasksPanel newRightPanel = new StopHookTasksPanel((RunnerAndConfigurationSettings) userObject, project);
             updateRightPanel(newRightPanel);
         }
         return userObject;
     }
 
-    private void updateRightPanel(BeforeTerminalTasksPanel newRightPanel) {
+    private void updateRightPanel(StopHookTasksPanel newRightPanel) {
         myRightPanel.removeAll();
         myRightPanel.add(newRightPanel, BorderLayout.CENTER);
     }

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@State(name = "BeforeTerminalTasksConfiguration", storages = @Storage("BeforeTerminalTasks.xml"))
+@State(name = "ConfigurationStopHook", storages = @Storage("ConfigurationStopHook.xml"))
 public class TasksSettings implements PersistentStateComponent<TasksSettings> {
     public Map<String, List<String>> runConfigIdBeforeRunTaskIdMap = new HashMap<>();
 
