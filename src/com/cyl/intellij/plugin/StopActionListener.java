@@ -43,7 +43,7 @@ public class StopActionListener implements AnActionListener, Disposable {
         RunConfiguration runConfiguration = stopSettings.getConfiguration();
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
 
-        List<RunnerAndConfigurationSettings> beforeRunConfigurations = TasksSettings.getInstance().getBeforeTerminalTasks(runConfiguration);
+        List<RunnerAndConfigurationSettings> beforeRunConfigurations = TasksSettings.getInstance(p).getBeforeTerminalTasks(runConfiguration);
         for (RunnerAndConfigurationSettings runnerAndConfigurationSettings : beforeRunConfigurations) {
             if (runnerAndConfigurationSettings != null) {
                 ExecutionUtil.runConfiguration(runnerAndConfigurationSettings, executor);

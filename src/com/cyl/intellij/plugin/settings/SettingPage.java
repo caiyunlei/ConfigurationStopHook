@@ -1,13 +1,12 @@
 package com.cyl.intellij.plugin.settings;
 
-import com.cyl.intellij.plugin.MyProjectUtil;
 import com.cyl.intellij.plugin.panels.BeforeTerminalTasksPanel;
 import com.cyl.intellij.plugin.panels.TreeCellRender;
+import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.treeStructure.Tree;
@@ -28,8 +27,10 @@ public class SettingPage implements Configurable {
     private JPanel myWholePanel;
     private Tree myLeftTree;
     private JPanel myRightPanel;
+    private Project project;
 
-    public SettingPage(PropertiesComponent propertiesComponent) {
+    public SettingPage(Project project) {
+        this.project = project;
     }
 
     @Nls
@@ -82,9 +83,6 @@ public class SettingPage implements Configurable {
     private void buildTreeNode(DefaultMutableTreeNode root) {
         //runConfigurable data come from here
         RunManagerImpl runManager = getRunManager();
-        if (runManager == null) {
-            return;
-        }
 
         Map<ConfigurationType, Map<String, List<RunnerAndConfigurationSettings>>> runConfigurations =
                 runManager.getConfigurationsGroupedByTypeAndFolder(true);
@@ -114,12 +112,7 @@ public class SettingPage implements Configurable {
     }
 
     private RunManagerImpl getRunManager() {
-        Project currentProject = MyProjectUtil.getCurrentProject();
-        if (currentProject != null) {
-            return (RunManagerImpl) RunManagerImpl.getInstance(currentProject);
-        } else {
-            return null;
-        }
+        return (RunManagerImpl) RunManager.getInstance(project);
     }
 
     @Override
@@ -138,7 +131,7 @@ public class SettingPage implements Configurable {
     private Object getSafeUserObject(DefaultMutableTreeNode node) {
         Object userObject = node.getUserObject();
         if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
-            BeforeTerminalTasksPanel newRightPanel = new BeforeTerminalTasksPanel((RunnerAndConfigurationSettings) userObject);
+            BeforeTerminalTasksPanel newRightPanel = new BeforeTerminalTasksPanel((RunnerAndConfigurationSettings) userObject, project);
             updateRightPanel(newRightPanel);
         }
         return userObject;
