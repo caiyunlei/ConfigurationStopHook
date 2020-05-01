@@ -2,3 +2,5 @@
 /gradle/wrapper/
 /build/
 /.idea/
+
+/gradle.properties

@@ -29,3 +29,7 @@ patchPluginXml {
     untilBuild '2020.*'
     changeNotes 'compatible with since 2019.2'
 }
+
+publishPlugin {
+    token intellijPublishToken
+}
