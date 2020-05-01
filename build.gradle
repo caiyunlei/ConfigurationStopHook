@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.cyl'
-version '1.0'
+version '1.1'
 
 sourceCompatibility = 1.8
 
@@ -27,4 +27,5 @@ intellij {
 
 patchPluginXml {
     untilBuild '2020.*'
+    changeNotes 'compatible with since 2019.2'
 }
