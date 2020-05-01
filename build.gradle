@@ -1,10 +1,11 @@
 plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '0.4.15'
+    id 'com.palantir.git-version' version '0.12.3'
 }
 
 group 'com.cyl'
-version '1.1'
+version versionDetails().lastTag
 
 sourceCompatibility = 1.8
 
