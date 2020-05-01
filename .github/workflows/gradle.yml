@@ -3,7 +3,8 @@
 
 name: Java CI with Gradle
 
-on: create
+on:
+  create
 
 
 jobs:
