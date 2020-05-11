@@ -1,5 +1,6 @@
 package com.cyl.intellij.plugin.panels;
 
+import com.cyl.intellij.plugin.MyRunConfigUtil;
 import com.intellij.execution.ProgramRunnerUtil;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationFactory;
@@ -38,7 +39,7 @@ public class TreeCellRender extends ColoredTreeCellRenderer {
 
         Object userObject = value.getUserObject();
         Boolean isShared = null;
-        String name = getUserObjectName(userObject);
+        String name = MyRunConfigUtil.getUserObjectName(userObject);
         if (userObject instanceof ConfigurationType) {
             SimpleTextAttributes simpleTextAttributes;
             if (((DefaultMutableTreeNode) value.getParent()).isRoot()) {
@@ -89,20 +90,6 @@ public class TreeCellRender extends ColoredTreeCellRenderer {
             LayeredIcon layeredIcon = new LayeredIcon(getIcon(), icon);
             setIcon(layeredIcon);
             setIconTextGap(0);
-        }
-    }
-
-    private String getUserObjectName(Object userObject) {
-        if (userObject instanceof ConfigurationType) {
-            return ((ConfigurationType) userObject).getDisplayName();
-        } else if (userObject instanceof ConfigurationFactory) {
-            return ((ConfigurationFactory) userObject).getName();
-        } else if (userObject instanceof SingleConfigurationConfigurable) {
-            return ((SingleConfigurationConfigurable) userObject).getNameText();
-        } else if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
-            return ((RunnerAndConfigurationSettingsImpl) userObject).getName();
-        } else {
-            return userObject.toString();
         }
     }
 }

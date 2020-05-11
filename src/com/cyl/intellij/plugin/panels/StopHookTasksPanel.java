@@ -1,5 +1,6 @@
 package com.cyl.intellij.plugin.panels;
 
+import com.cyl.intellij.plugin.MyRunConfigUtil;
 import com.cyl.intellij.plugin.settings.TasksSettings;
 import com.intellij.execution.*;
 import com.intellij.execution.compound.ConfigurationSelectionUtil;
@@ -159,6 +160,7 @@ public class StopHookTasksPanel extends JPanel {
                 RunManager runManager = RunManager.getInstance(project);
                 if (runManager instanceof RunManagerImpl) {
                     setIcon(((RunManagerImpl) runManager).getConfigurationIcon((RunnerAndConfigurationSettings) value));
+                    setText(MyRunConfigUtil.getUserObjectName(value));
                 }
             }
             return this;
