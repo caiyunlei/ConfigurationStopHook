@@ -1,10 +1,7 @@
 package com.cyl.intellij.plugin.panels;
 
 import com.cyl.intellij.plugin.settings.TasksSettings;
-import com.intellij.execution.BeforeRunTask;
-import com.intellij.execution.BeforeRunTaskProvider;
-import com.intellij.execution.ExecutionBundle;
-import com.intellij.execution.RunnerAndConfigurationSettings;
+import com.intellij.execution.*;
 import com.intellij.execution.compound.ConfigurationSelectionUtil;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.UnknownRunConfiguration;
@@ -66,8 +63,8 @@ public class StopHookTasksPanel extends JPanel {
         JBList<RunnerAndConfigurationSettings> myList = new JBList<>(myModel);
         myList.getEmptyText().setText("There are no tasks to run before stop");
         myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        myList.setCellRenderer(new StopHookTasksPanel.MyListCellRenderer());
-        myList.setVisibleRowCount(10);
+        myList.setCellRenderer(new MyListCellRenderer());
+        myList.setVisibleRowCount(4);
 
         ToolbarDecorator myDecorator = ToolbarDecorator.createDecorator(myList);
         if (!SystemInfo.isMac) {
@@ -158,16 +155,10 @@ public class StopHookTasksPanel extends JPanel {
         public Component getListCellRendererComponent(JList list, Object value, int index,
             boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (value instanceof BeforeRunTask) {
-                BeforeRunTask task = (BeforeRunTask) value;
-                @SuppressWarnings("unchecked")
-                BeforeRunTaskProvider<BeforeRunTask> provider =
-                    BeforeRunTaskProvider.getProvider(myRunConfiguration.getProject(),
-                        task.getProviderId());
-                if (provider != null) {
-                    Icon icon = provider.getTaskIcon(task);
-                    setIcon(icon != null ? icon : provider.getIcon());
-                    setText(provider.getDescription(task));
+            if (value instanceof RunnerAndConfigurationSettings) {
+                RunManager runManager = RunManager.getInstance(project);
+                if (runManager instanceof RunManagerImpl) {
+                    setIcon(((RunManagerImpl) runManager).getConfigurationIcon((RunnerAndConfigurationSettings) value));
                 }
             }
             return this;
