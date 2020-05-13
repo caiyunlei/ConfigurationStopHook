@@ -125,6 +125,8 @@ public class StopHookTasksPanel extends JPanel {
 
             List<RunConfiguration> configurations = ContainerUtil.map(RunManagerImpl.getInstanceImpl(project).getAllSettings(),
                     RunnerAndConfigurationSettings::getConfiguration);
+            configurations.remove(myRunConfiguration);
+            
             RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
             listPopup = ConfigurationSelectionUtil.createPopup(project, runManager, configurations, (selectedConfigs, selectedTarget) -> {
                 RunConfiguration selectedConfig = ContainerUtil.getFirstItem(selectedConfigs);

@@ -45,9 +45,7 @@ public class SettingPage implements Configurable {
         myLeftTree = new Tree();
         myLeftTree.setShowsRootHandles(true);
         RunManagerImpl runManager = getRunManager();
-        if (runManager != null) {
-            myLeftTree.setCellRenderer(new TreeCellRender(runManager));
-        }
+        myLeftTree.setCellRenderer(new TreeCellRender(runManager));
 
         myRightPanel = new JPanel(new BorderLayout());
 
