@@ -59,7 +59,6 @@ public class TreeCellRender extends ColoredTreeCellRenderer {
             RunnerAndConfigurationSettings settings = null;
             if (userObject instanceof SingleConfigurationConfigurable) {
                 settings = (RunnerAndConfigurationSettings) ((SingleConfigurationConfigurable) userObject).getSettings();
-//                isShared = ((SingleConfigurationConfigurable) userObject).isStoreProjectConfiguration();
                 setIcon(ProgramRunnerUtil.getConfigurationIcon(settings, !((SingleConfigurationConfigurable) userObject).isValid()));
             } else if (userObject instanceof RunnerAndConfigurationSettingsImpl) {
                 isShared = ((RunnerAndConfigurationSettingsImpl) userObject).isShared();

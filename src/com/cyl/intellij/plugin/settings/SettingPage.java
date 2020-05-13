@@ -9,6 +9,7 @@ import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
 import org.jetbrains.annotations.Nls;
@@ -51,6 +52,7 @@ public class SettingPage implements Configurable {
         myRightPanel = new JPanel(new BorderLayout());
 
         JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftTree, myRightPanel);
+        splitPanel.setBackground(JBColor.WHITE);
         splitPanel.setDividerLocation(250);
 
         myWholePanel = new JPanel();
