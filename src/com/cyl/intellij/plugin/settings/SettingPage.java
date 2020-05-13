@@ -26,7 +26,7 @@ import java.util.Map;
 public class SettingPage implements Configurable {
     private static final String CONFIG_PAGE_DISPLAY_NAME = "ConfigurationStopHook";
     private JPanel myWholePanel;
-    private Tree myLeftTree;
+    private Tree myRunConfigurationsTree;
     private JPanel myRightPanel;
     private Project project;
 
@@ -42,14 +42,14 @@ public class SettingPage implements Configurable {
 
     @Override
     public JComponent createComponent() {
-        myLeftTree = new Tree();
-        myLeftTree.setShowsRootHandles(true);
+        myRunConfigurationsTree = new Tree();
+        myRunConfigurationsTree.setShowsRootHandles(true);
         RunManagerImpl runManager = getRunManager();
-        myLeftTree.setCellRenderer(new TreeCellRender(runManager));
+        myRunConfigurationsTree.setCellRenderer(new TreeCellRender(runManager));
 
         myRightPanel = new JPanel(new BorderLayout());
 
-        JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftTree, myRightPanel);
+        JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myRunConfigurationsTree, myRightPanel);
         splitPanel.setBackground(JBColor.WHITE);
         splitPanel.setDividerLocation(250);
 
@@ -62,17 +62,17 @@ public class SettingPage implements Configurable {
 
     private void initTree() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
-        myLeftTree.setModel(new DefaultTreeModel(root));
+        myRunConfigurationsTree.setModel(new DefaultTreeModel(root));
 
         buildTreeNode(root);
 
-        myLeftTree.expandRow(0);
-        myLeftTree.setRootVisible(false);
-        TreeUtil.expandAll(myLeftTree);
+        myRunConfigurationsTree.expandRow(0);
+        myRunConfigurationsTree.setRootVisible(false);
+        TreeUtil.expandAll(myRunConfigurationsTree);
 
-        myLeftTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
+        myRunConfigurationsTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
             //com/intellij/execution/impl/RunConfigurable.kt
-            TreePath selectionPath = myLeftTree.getSelectionPath();
+            TreePath selectionPath = myRunConfigurationsTree.getSelectionPath();
             if (selectionPath != null) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
                 getSafeUserObject(node);
