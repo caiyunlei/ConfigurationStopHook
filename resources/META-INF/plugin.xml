@@ -3,7 +3,14 @@
   <name>ConfigurationStopHook</name>
   <vendor email="cyl1014053448@gmail.com">Yunlei Cai</vendor>
 
-  <description>Run tasks before stop, just like run tasks before launch.</description>
+  <description>
+    <![CDATA[
+    <P>
+    <b>Run tasks before stop, just like run tasks before launch.</b>
+    <P>
+    <img src="https://plugins.jetbrains.com/files/14226/screenshot_21733.png" alt="ConfigurationStopHook" height="340" width="530" >
+    ]]>
+  </description>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="193"/>
