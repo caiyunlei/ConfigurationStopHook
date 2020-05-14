@@ -7,8 +7,6 @@ plugins {
 group 'com.cyl'
 version versionDetails().lastTag
 
-sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
 }
