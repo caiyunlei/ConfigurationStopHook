@@ -27,7 +27,7 @@ public class StopActionListener implements AnActionListener, Disposable {
     }
 
     @Override
-    public void afterActionPerformed(@NotNull AnAction action, @NotNull DataContext dataContext, @NotNull AnActionEvent event) {
+    public void beforeActionPerformed(@NotNull AnAction action, @NotNull DataContext dataContext, @NotNull AnActionEvent event) {
         if (isStopAction(action)) {
             runTasks(event.getProject());
         }
