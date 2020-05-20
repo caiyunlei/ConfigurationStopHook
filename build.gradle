@@ -26,7 +26,7 @@ intellij {
 
 patchPluginXml {
     untilBuild '201.*'
-    changeNotes 'compatible with since 2019.2'
+    changeNotes 'show task icon and simplify name'
 }
 
 publishPlugin {
