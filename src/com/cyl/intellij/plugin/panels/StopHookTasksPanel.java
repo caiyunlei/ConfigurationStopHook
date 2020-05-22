@@ -125,8 +125,9 @@ public class StopHookTasksPanel extends JPanel {
 
             List<RunConfiguration> configurations = ContainerUtil.map(RunManagerImpl.getInstanceImpl(project).getAllSettings(),
                     RunnerAndConfigurationSettings::getConfiguration);
-            configurations.remove(myRunConfiguration);
-            
+            filterItself(configurations);
+            filterAlreadyAdded(configurations);
+
             RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
             listPopup = ConfigurationSelectionUtil.createPopup(project, runManager, configurations, (selectedConfigs, selectedTarget) -> {
                 RunConfiguration selectedConfig = ContainerUtil.getFirstItem(selectedConfigs);
@@ -138,6 +139,14 @@ public class StopHookTasksPanel extends JPanel {
         }
 
         listPopup.show(Objects.requireNonNull(button.getPreferredPopupPoint()));
+    }
+
+    private void filterItself(List<RunConfiguration> configurations) {
+        configurations.remove(myRunConfiguration);
+    }
+
+    private void filterAlreadyAdded(List<RunConfiguration> configurations) {
+        configurations.removeAll(ContainerUtil.map(myModel.getItems(), RunnerAndConfigurationSettings::getConfiguration));
     }
 
     @NotNull
