@@ -11,7 +11,6 @@ import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.openapi.actionSystem.CommonShortcuts;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.CommonActionsPanel;
@@ -68,9 +67,6 @@ public class StopHookTasksPanel extends JPanel {
         myList.setVisibleRowCount(4);
 
         ToolbarDecorator myDecorator = ToolbarDecorator.createDecorator(myList);
-        if (!SystemInfo.isMac) {
-            myDecorator.setAsUsualTopToolbar();
-        }
         myDecorator.setAddAction(this::doAddAction);
         myDecorator.setAddActionUpdater(e -> true);
 
