@@ -21,11 +21,11 @@ sourceSets.main.resources.srcDir 'resources'
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2019.2'
+    version '2020.1'
 }
 
 patchPluginXml {
-    untilBuild '201.*'
+    untilBuild '202.*'
     changeNotes 'show task icon and simplify name'
 }
 
