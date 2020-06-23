@@ -26,7 +26,7 @@ intellij {
 
 patchPluginXml {
     untilBuild '202.*'
-    changeNotes 'show task icon and simplify name'
+    changeNotes '1.can not add already added task. 2.remove deprecated api usage'
 }
 
 publishPlugin {
