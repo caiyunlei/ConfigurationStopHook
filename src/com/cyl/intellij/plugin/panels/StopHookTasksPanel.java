@@ -114,7 +114,7 @@ public class StopHookTasksPanel extends JPanel {
 
         ListPopup listPopup = null;
         Project project = myRunConfiguration.getProject();
-        for (final BeforeRunTaskProvider<BeforeRunTask> provider : getBeforeRunTaskProviders()) {
+        for (final BeforeRunTaskProvider<BeforeRunTask<?>> provider : getBeforeRunTaskProviders()) {
             if (provider.createTask(myRunConfiguration) == null || provider.isSingleton()) {
                 continue;
             }
@@ -146,15 +146,15 @@ public class StopHookTasksPanel extends JPanel {
     }
 
     @NotNull
-    private List<BeforeRunTaskProvider<BeforeRunTask>> getBeforeRunTaskProviders() {
+    private List<BeforeRunTaskProvider<BeforeRunTask<?>>> getBeforeRunTaskProviders() {
         //todo:change to get runSettings
-        List<BeforeRunTaskProvider<BeforeRunTask>> extensionList =
+        List<BeforeRunTaskProvider<BeforeRunTask<?>>> extensionList =
                 BeforeRunTaskProvider.EXTENSION_POINT_NAME.getExtensionList(myRunConfiguration.getProject());
         return extensionList.stream().filter(anotherConfiguration()).collect(Collectors.toList());
     }
 
     @NotNull
-    private Predicate<BeforeRunTaskProvider<BeforeRunTask>> anotherConfiguration() {
+    private Predicate<BeforeRunTaskProvider<BeforeRunTask<?>>> anotherConfiguration() {
         return RunConfigurationBeforeRunProvider.class::isInstance;
     }
 

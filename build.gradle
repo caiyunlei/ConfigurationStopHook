@@ -21,12 +21,12 @@ sourceSets.main.resources.srcDir 'resources'
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2020.1'
+    version '2020.2'
 }
 
 patchPluginXml {
-    untilBuild '203.*'
-    changeNotes 'compatible with 2020.3'
+    untilBuild '212.*'
+    changeNotes 'compatible to 2021.2'
 }
 
 publishPlugin {
