@@ -26,7 +26,7 @@ public class TasksSettings implements PersistentStateComponent<TasksSettings> {
     }
 
     public static TasksSettings getInstance(Project project) {
-        return ServiceManager.getService(project, TasksSettings.class);
+        return project.getService(TasksSettings.class);
     }
 
     public List<RunnerAndConfigurationSettings> getBeforeTerminalTasks(RunConfiguration settings) {

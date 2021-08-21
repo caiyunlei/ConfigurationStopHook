@@ -125,13 +125,14 @@ public class StopHookTasksPanel extends JPanel {
             filterAlreadyAdded(configurations);
 
             RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
-            listPopup = ConfigurationSelectionUtil.createPopup(project, runManager, configurations, (selectedConfigs, selectedTarget) -> {
-                RunConfiguration selectedConfig = ContainerUtil.getFirstItem(selectedConfigs);
-                RunnerAndConfigurationSettings selectedSettings = selectedConfig == null ? null : runManager.getSettings(selectedConfig);
-                if (selectedSettings != null) {
-                    myModel.add(selectedSettings);
-                }
-            });
+            listPopup = ConfigurationSelectionUtil.createPopup(project, runManager, configurations,
+                    (selectedConfigs, selectedTarget) -> {
+                        RunConfiguration selectedConfig = ContainerUtil.getFirstItem(selectedConfigs);
+                        var selectedSettings = selectedConfig == null ? null : runManager.getSettings(selectedConfig);
+                        if (selectedSettings != null) {
+                            myModel.add(selectedSettings);
+                        }
+                    });
         }
 
         listPopup.show(Objects.requireNonNull(button.getPreferredPopupPoint()));
@@ -149,7 +150,7 @@ public class StopHookTasksPanel extends JPanel {
     private List<BeforeRunTaskProvider<BeforeRunTask<?>>> getBeforeRunTaskProviders() {
         //todo:change to get runSettings
         List<BeforeRunTaskProvider<BeforeRunTask<?>>> extensionList =
-                BeforeRunTaskProvider.EXTENSION_POINT_NAME.getExtensionList(myRunConfiguration.getProject());
+                BeforeRunTaskProvider.EP_NAME.getExtensions(myRunConfiguration.getProject());
         return extensionList.stream().filter(anotherConfiguration()).collect(Collectors.toList());
     }
 

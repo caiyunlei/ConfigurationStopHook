@@ -27,7 +27,7 @@ public class StopActionListener implements AnActionListener, Disposable {
     }
 
     @Override
-    public void beforeActionPerformed(@NotNull AnAction action, @NotNull DataContext dataContext, @NotNull AnActionEvent event) {
+    public void beforeActionPerformed(@NotNull AnAction action, @NotNull AnActionEvent event) {
         if (isStopAction(action)) {
             runTasks(event.getProject());
         }
@@ -43,8 +43,8 @@ public class StopActionListener implements AnActionListener, Disposable {
         RunConfiguration runConfiguration = stopSettings.getConfiguration();
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
 
-        List<RunnerAndConfigurationSettings> beforeRunConfigurations = TasksSettings.getInstance(p).getBeforeTerminalTasks(runConfiguration);
-        for (RunnerAndConfigurationSettings runnerAndConfigurationSettings : beforeRunConfigurations) {
+        var beforeRunConfigurations = TasksSettings.getInstance(p).getBeforeTerminalTasks(runConfiguration);
+        for (var runnerAndConfigurationSettings : beforeRunConfigurations) {
             if (runnerAndConfigurationSettings != null) {
                 ExecutionUtil.runConfiguration(runnerAndConfigurationSettings, executor);
             }
